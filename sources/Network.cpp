@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-04 14:47:19
+* @Last Modified time: 2019-03-13 10:48:19
 */
 
 #include "Network.h"
@@ -46,6 +46,11 @@ void					Network::SetCostFunction(int id)
 	{
 		this->SetCostFunction(&SquaredError);
 		this->SetCostFunctionDerivative(&SquaredErrorDerivative);
+	}
+	else if (id == COST_FUNCTION_CE)
+	{
+		this->SetCostFunction(&CrossEntropy);
+		this->SetCostFunctionDerivative(&CrossEntropyDerivative);
 	}
 }
 
@@ -99,9 +104,7 @@ Layer					*Network::GetOutputLayer() const
 	return (nullptr);
 }
 
-static void				UpdateNeuronWeights(Neuron* neuron);
-
-static void				CalcNeuron(Neuron *neuron)
+void					Network::CalcNeuron(Neuron *neuron)
 {
 	std::vector<Connection *>	connections;
 	value_t 					currentDerivedValue;
@@ -116,31 +119,28 @@ static void				CalcNeuron(Neuron *neuron)
 	UpdateNeuronWeights(neuron);
 }
 
-static void				UpdateNeuronWeights(Neuron *neuron)
+void					Network::UpdateNeuronWeights(Neuron *neuron)
 {
 	std::vector<Connection *>	connections;
 	
 	connections = neuron->GetInputConnections();
 	for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
 	{
-		connections[i]->SetNextWeight(connections[i]->GetWeight() - 0.1 * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i])));
+		//std::cout << "changes: " << learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i])) << std::endl;
+		connections[i]->SetNextWeight(connections[i]->GetWeight() - learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i])));
 		connections[i]->SetShouldUpdate(true);
 	}
 }
 
-void					Network::Propagate(value_t goodValue)
+void					Network::Propagate(values_t goodValues, values_t derivedCost)
 {
-	values_t					goodValues;
 	std::vector<Neuron *>		outputLayerNeurons;
 	std::vector<Neuron *>		neurons;
-	value_t						derivedCost;
 
-	goodValues.push_back(goodValue);
 	outputLayerNeurons = this->GetOutputLayer()->GetNeurons();
 	for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
 	{
-		derivedCost = this->GetDerivedCost(goodValues, outputLayerNeurons[i]);
-		outputLayerNeurons[i]->SetDerivedError(derivedCost);
+		outputLayerNeurons[i]->SetDerivedError(derivedCost[i]);
 		UpdateNeuronWeights(outputLayerNeurons[i]);
 	}
 	for (std::vector<Layer *>::size_type i = 0; i < layers.size() - 1; ++i)
@@ -153,6 +153,19 @@ void					Network::Propagate(value_t goodValue)
 		}
 	}
 	this->UpdateWeights();
+}
+
+void					Network::Propagate(values_t goodValues)
+{
+	std::vector<Neuron *>		outputLayerNeurons;
+	values_t					derivedCost;
+
+	outputLayerNeurons = this->GetOutputLayer()->GetNeurons();
+	for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
+	{
+		derivedCost.push_back(this->GetDerivedCost(goodValues, outputLayerNeurons[i]));
+	}
+	this->Propagate(goodValues, derivedCost);
 }
 
 void					Network::UpdateWeights()

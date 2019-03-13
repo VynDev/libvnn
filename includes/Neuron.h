@@ -1,9 +1,6 @@
 #ifndef NEURON_H
 #define NEURON_H
 
-#define NEURON_FUNCTION_BIAS 0
-#define NEURON_FUNCTION_SIGMOID 1
-
 #include <vector>
 
 #include "Layer.h"

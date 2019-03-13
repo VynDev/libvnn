@@ -3,7 +3,7 @@ NAME = libnn.a
 COMPILER = g++
 
 FLAGS = 
-SOURCES = Neuron.cpp Connection.cpp Layer.cpp Network.cpp activationfunctions.cpp costfunctions.cpp
+SOURCES = Neuron.cpp Connection.cpp Layer.cpp Network.cpp Network_Fit.cpp activationfunctions.cpp costfunctions.cpp
 
 INCLUDES = -I includes
 

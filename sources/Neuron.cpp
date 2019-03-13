@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-04 17:13:28
+* @Last Modified time: 2019-03-13 10:48:25
 */
 
 #include <iostream>
@@ -79,6 +79,11 @@ void		Neuron::SetActivationFunction(int id)
 	{
 		this->SetActivationFunction(&Sigmoid);
 		this->SetActivationFunctionDerivative(&SigmoidDerivative);
+	}
+	if (id == NEURON_FUNCTION_SOFTMAX)
+	{
+		this->SetActivationFunction(&Softmax);
+		this->SetActivationFunctionDerivative(&SoftmaxDerivative);
 	}
 }
 
