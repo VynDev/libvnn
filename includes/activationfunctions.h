@@ -7,12 +7,12 @@
 
 #include "types.h"
 
-class Neuron;
+namespace vyn::neuralnetwork {
 
-value_t		Sigmoid(Neuron *, value_t x);
-value_t		SigmoidDerivative(Neuron *, value_t x);
+	value_t		Sigmoid(Neuron *, value_t x);
+	value_t		SigmoidDerivative(Neuron *, value_t x);
 
-value_t		Softmax(Neuron *, value_t x);
-value_t		SoftmaxDerivative(Neuron *, value_t x);
-
+	value_t		Softmax(Neuron *, value_t x);
+	value_t		SoftmaxDerivative(Neuron *, value_t x);
+}
 #endif

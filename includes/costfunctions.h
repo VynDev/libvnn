@@ -7,12 +7,10 @@
 #include <vector>
 #include "types.h"
 
-class Neuron;
+vyn::neuralnetwork::value_t	SquaredError(std::vector<vyn::neuralnetwork::Neuron *> outputNeurons, std::vector<vyn::neuralnetwork::value_t> expectedOutput);
+vyn::neuralnetwork::value_t	SquaredErrorDerivative(std::vector<vyn::neuralnetwork::Neuron *> outputNeurons, std::vector<vyn::neuralnetwork::value_t> expectedOutput, vyn::neuralnetwork::Neuron *outputNeuron);
 
-value_t	SquaredError(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput);
-value_t	SquaredErrorDerivative(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput, Neuron *outputNeuron);
-
-value_t	CrossEntropy(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput);
-value_t	CrossEntropyDerivative(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput, Neuron *outputNeuron);
+vyn::neuralnetwork::value_t	CrossEntropy(std::vector<vyn::neuralnetwork::Neuron *> outputNeurons, std::vector<vyn::neuralnetwork::value_t> expectedOutput);
+vyn::neuralnetwork::value_t	CrossEntropyDerivative(std::vector<vyn::neuralnetwork::Neuron *> outputNeurons, std::vector<vyn::neuralnetwork::value_t> expectedOutput, vyn::neuralnetwork::Neuron *outputNeuron);
 
 #endif
