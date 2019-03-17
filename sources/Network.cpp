@@ -2,17 +2,18 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-13 12:47:16
+* @Last Modified time: 2019-03-16 19:03:38
 */
 
-#include "Network.h"
+#include <iostream>
+#include <sstream>
+#include <cmath>
+#include <fstream>
 
+#include "Network.h"
 #include "Layer.h"
 #include "Neuron.h"
 #include "Connection.h"
-
-#include <iostream>
-#include <cmath>
 
 namespace vyn::neuralnetwork {
 
@@ -44,15 +45,16 @@ namespace vyn::neuralnetwork {
 
 	void					Network::SetCostFunction(int id)
 	{
+		costFunctionId = id;
 		if (id == COST_FUNCTION_MSE)
 		{
-			this->SetCostFunction(&SquaredError);
-			this->SetCostFunctionDerivative(&SquaredErrorDerivative);
+			costFunction = &SquaredError;
+			costFunctionDerivative = &SquaredErrorDerivative;
 		}
 		else if (id == COST_FUNCTION_CE)
 		{
-			this->SetCostFunction(&CrossEntropy);
-			this->SetCostFunctionDerivative(&CrossEntropyDerivative);
+			costFunction = &CrossEntropy;
+			costFunctionDerivative = &CrossEntropyDerivative;
 		}
 	}
 
@@ -115,7 +117,11 @@ namespace vyn::neuralnetwork {
 		connections = neuron->GetOutputConnections();
 		for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
 		{
+			DEBUG_CHECK_VALUE(connections[i]->GetOutput()->GetDerivedError(), "Current derived value at output neuron");
+			DEBUG_CHECK_VALUE(connections[i]->GetOutput()->GetDerivedValue(neuron), "Derived value w.r.t neuron (self)");
+			DEBUG_CHECK_VALUE(currentDerivedValue, "Current derived value for self");
 			currentDerivedValue += (connections[i]->GetOutput()->GetDerivedError() * connections[i]->GetOutput()->GetDerivedValue(neuron));
+			DEBUG_CHECK_VALUE(currentDerivedValue, "New current derived value for self (" + std::to_string(connections[i]->GetOutput()->GetDerivedError()) + " * " + std::to_string(connections[i]->GetOutput()->GetDerivedValue(neuron)) + ")");
 		}
 		neuron->SetDerivedError(currentDerivedValue);
 		UpdateNeuronWeights(neuron);
@@ -128,8 +134,35 @@ namespace vyn::neuralnetwork {
 		connections = neuron->GetInputConnections();
 		for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
 		{
-			//std::cout << "changes: " << learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i])) << std::endl;
-			connections[i]->SetNextWeight(connections[i]->GetWeight() - learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i])));
+			weight_t	gradient;
+
+			DEBUG_CHECK_VALUE(neuron->GetDerivedError(), "Current derived error");
+			DEBUG_CHECK_VALUE(neuron->GetDerivedValue(connections[i]), "Derived value w.r.t connection");
+			gradient = learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i]));
+			DEBUG_CHECK_VALUE(gradient, "gradient value from derived value after learning rate");
+
+			if (gradientClipping != 0)
+			{
+				if (gradient > gradientClipping)
+					gradient = gradientClipping;
+				else if (gradient < -gradientClipping)
+					gradient = -gradientClipping;
+			}
+			if (weightPenality != 0)
+			{
+				if (connections[i]->GetWeight() < -weightPenality)
+					gradient = gradient * (weightPenality / -connections[i]->GetWeight());
+				else if (connections[i]->GetWeight() > weightPenality)
+					gradient = gradient * (weightPenality / connections[i]->GetWeight());
+			}
+
+			if (connections[i]->GetWeight() - gradient < -1000 || connections[i]->GetWeight() - gradient > 1000)
+			{
+				std::cout << "Weight too high: " << connections[i]->GetWeight() << " - " << gradient << std::endl;
+				throw std::string("Weight problem: ") + std::to_string(connections[i]->GetWeight() - gradient);
+			}
+			connections[i]->SetNextWeight(connections[i]->GetWeight() - gradient);
+			DEBUG_CHECK_VALUE(connections[i]->GetNextWeight(), "weight value after delta update");
 			connections[i]->SetShouldUpdate(true);
 		}
 	}
@@ -142,6 +175,7 @@ namespace vyn::neuralnetwork {
 		outputLayerNeurons = this->GetOutputLayer()->GetNeurons();
 		for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
 		{
+			DEBUG_CHECK_VALUE(derivedCost[i], "Derived cost");
 			outputLayerNeurons[i]->SetDerivedError(derivedCost[i]);
 			UpdateNeuronWeights(outputLayerNeurons[i]);
 		}
@@ -180,11 +214,40 @@ namespace vyn::neuralnetwork {
 			if (connections[i]->ShouldUpdate())
 			{
 				weight_t newWeight;
+
 				newWeight = connections[i]->GetNextWeight();
-				
 				connections[i]->SetWeight(newWeight);
 				connections[i]->SetShouldUpdate(false);
 			}
 		}
+	}
+
+	void					Network::SaveTo(std::string fileName)
+	{
+		std::ofstream file;
+		file.open(fileName);
+		file << VYN_NEURALNETWORK_STRING << std::endl;
+		file << VYN_NEURALNETWORK_VERSION << std::endl;
+		file << layers.size() << std::endl;
+		for (std::vector<Layer *>::size_type i = 0; i < layers.size(); ++i)
+		{
+			std::vector<Neuron *> neurons;
+			neurons = layers[i]->GetNeurons();
+			for (std::vector<Neuron *>::size_type j = 0; j < neurons.size(); ++j)
+			{
+				file << neurons[j]->GetActivationFunctionId() << " ";
+			}
+			file << std::endl;
+		}
+		file << this->GetCostFunctionId() << std::endl;
+
+		std::vector<Connection *>	connections;
+
+		connections = Connection::GetConnections();
+		for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+		{
+			file << connections[i]->GetWeight() << " ";
+		}
+		file.close();
 	}
 }

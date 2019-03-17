@@ -2,12 +2,13 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-13 12:47:50
+* @Last Modified time: 2019-03-15 14:02:18
 */
 
 #include <iostream>
 #include <cmath>
 
+#include "Network.h"
 #include "Neuron.h"
 #include "Connection.h"
 
@@ -55,36 +56,43 @@ namespace vyn::neuralnetwork {
 		newValue = 0;
 		for (std::vector<Connection *>::size_type i = 0; i != inputs.size(); ++i)
 		{
-			Neuron		*inputNeuron;
+			value_t		inputNeuronValue;
 			weight_t	weight;
 
-			inputNeuron = inputs[i]->GetInput();
+			inputNeuronValue = inputs[i]->GetInput()->GetValue();
 			weight = inputs[i]->GetWeight();
-			newValue += inputNeuron->GetValue() * weight;
+			DEBUG_CHECK_VALUE(inputNeuronValue, "ComputeValue: input neuron value");
+			DEBUG_CHECK_VALUE(weight, "ComputeValue: weight value");
+			newValue += inputNeuronValue * weight;
 		}
+		this->rawValue = newValue;
+		this->value = newValue;
+	}
+
+	void	Neuron::ActivateFunction()
+	{
 		if (activationFuntion != nullptr)
 		{
-			this->rawValue = newValue;
-			this->value = (*activationFuntion)(this, newValue);
+			this->value = (*activationFuntion)(this, rawValue);
 		}
 		else
 		{
 			throw std::string("No activation function for neuron");
 		}
-
 	}
 
 	void		Neuron::SetActivationFunction(int id)
 	{
+		activationFunctionId = id;
 		if (id == NEURON_FUNCTION_SIGMOID)
 		{
-			this->SetActivationFunction(&Sigmoid);
-			this->SetActivationFunctionDerivative(&SigmoidDerivative);
+			activationFuntion = &Sigmoid;
+			activationFuntionDerivative = &SigmoidDerivative;
 		}
 		if (id == NEURON_FUNCTION_SOFTMAX)
 		{
-			this->SetActivationFunction(&Softmax);
-			this->SetActivationFunctionDerivative(&SoftmaxDerivative);
+			activationFuntion = &Softmax;
+			activationFuntionDerivative = &SoftmaxDerivative;
 		}
 	}
 

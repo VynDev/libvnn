@@ -2,11 +2,10 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-13 12:47:30
+* @Last Modified time: 2019-03-16 18:37:47
 */
 
 #include "Network.h"
-
 #include "Layer.h"
 #include "Neuron.h"
 #include "Connection.h"
@@ -67,10 +66,10 @@ namespace vyn::neuralnetwork {
 			{
 				value_t		cost;
 				cost = TrainBatch(this, inputs, outputs, batchSize, j);
-
 				if (csv != nullptr)
 					*csv << cost << std::endl;
 				std::cout << "Cost: " << cost << std::endl;
+				DEBUG_CHECK_VALUE(cost, "Cost");
 			}
 		}
 		std::cout << "Training finished" << std::endl;

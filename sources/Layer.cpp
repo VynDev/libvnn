@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-13 12:46:52
+* @Last Modified time: 2019-03-14 14:30:28
 */
 
 #include <iostream>
@@ -15,11 +15,10 @@ namespace vyn::neuralnetwork {
 	Layer::Layer(int nbNeuron, int functionId, int nbBias)
 	{
 		++nbLayer;
-		this->nbBias += nbBias;
 		(void)functionId;
 		for (int i = 0; i < nbNeuron; ++i)
 		{
-			AddNeuron(NEURON_FUNCTION_SIGMOID);
+			AddNeuron(functionId);
 		}
 		for (int i = 0; i < nbBias; ++i)
 		{
@@ -31,6 +30,8 @@ namespace vyn::neuralnetwork {
 	{
 		Neuron	*neuron;
 
+		if (functionId == NEURON_FUNCTION_BIAS)
+			this->nbBias += 1;
 		neuron = new Neuron(functionId);
 		neuron->SetParentLayer(this);
 		neurons.push_back(neuron);
@@ -40,6 +41,7 @@ namespace vyn::neuralnetwork {
 	{
 		Neuron	*neuron;
 
+		this->nbBias += 1;
 		neuron = new Neuron(NEURON_FUNCTION_BIAS);
 		neuron->SetParentLayer(this);
 		neurons.push_back(neuron);
@@ -72,6 +74,11 @@ namespace vyn::neuralnetwork {
 		{
 			if (!neurons[i]->IsBias())
 				neurons[i]->ComputeValue();
+		}
+		for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+		{
+			if (!neurons[i]->IsBias())
+				neurons[i]->ActivateFunction();
 		}
 	}
 

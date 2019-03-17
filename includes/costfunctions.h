@@ -1,8 +1,8 @@
 #ifndef COSTFUNCTIONS_H
 #define COSTFUNCTIONS_H
 
-#define COST_FUNCTION_MSE 0
-#define COST_FUNCTION_CE 1
+#define COST_FUNCTION_MSE 1
+#define COST_FUNCTION_CE 2
 
 #include <vector>
 #include "types.h"

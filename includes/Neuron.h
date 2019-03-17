@@ -23,6 +23,7 @@ namespace vyn::neuralnetwork {
 		value_t						derivedError = 0;
 		value_t						(*activationFuntion)(Neuron *, value_t) = nullptr;
 		value_t						(*activationFuntionDerivative)(Neuron *, value_t) = nullptr;
+		int							activationFunctionId = 0;
 		bool						isBias = false;
 
 		Layer						*parentLayer;
@@ -38,18 +39,19 @@ namespace vyn::neuralnetwork {
 		void						ConnectTo(Neuron *neuron);
 		void						AddInputConnection(Connection *newConnection);
 		void						ComputeValue();
+		void						ActivateFunction();
 		void						SetValue(value_t newValue) {value = newValue;};
 		void						SetBias(bool newValue) {isBias = newValue;};
 
 		void						SetActivationFunction(int id);
-		void						SetActivationFunction(value_t (*f)(Neuron *, value_t)) {activationFuntion = f;};
-		void						SetActivationFunctionDerivative(value_t (*f)(Neuron *, value_t)) {activationFuntionDerivative = f;};
+		void						SetActivationFunction(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntion = f;};
+		void						SetActivationFunctionDerivative(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntionDerivative = f;};
 
 		void						SetDerivedError(value_t newValue) {derivedError = newValue;};
 
-
 		bool						IsBias() const {return (isBias);};
 
+		int							GetActivationFunctionId() const {return (activationFunctionId);};
 		std::vector<Connection *>	GetInputConnections() const {return (inputs);};
 		std::vector<Connection *>	GetOutputConnections() const {return (outputs);};
 		int							GetId() const {return (id);};
