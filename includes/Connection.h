@@ -18,8 +18,8 @@ namespace vyn::neuralnetwork {
 		const int							id = nbConnection;
 		Neuron								*input = nullptr;
 		Neuron								*output = nullptr;
-		weight_t							weight = 0.3 + (((value_t)rand() / (value_t)RAND_MAX) * 0.7);
-		weight_t							nextWeight = -100;
+		weight_t							weight = ((value_t)rand() / (value_t)RAND_MAX) - 0.5; //0.3 + (((value_t)rand() / (value_t)RAND_MAX) * 0.7);
+		value_t								gradient = 0;
 
 		bool								shouldUpdate = false;
 
@@ -30,7 +30,7 @@ namespace vyn::neuralnetwork {
 		void								SetInput(Neuron *neuron) {input = neuron;};
 		void								SetOutput(Neuron *neuron) {output = neuron;};
 		void								SetWeight(weight_t newWeight) {weight = newWeight;};
-		void								SetNextWeight(weight_t newNextWeight) {nextWeight = newNextWeight;};
+		void								SetGradient(value_t newGradient) {gradient = newGradient;};
 		void								SetShouldUpdate(bool a) {shouldUpdate = a;};
 
 		bool								ShouldUpdate() const {return (shouldUpdate);};
@@ -38,7 +38,7 @@ namespace vyn::neuralnetwork {
 		Neuron								*GetInput() const {return (input);};
 		Neuron								*GetOutput() const {return (output);};
 		weight_t							GetWeight() const {return (weight);};
-		weight_t							GetNextWeight() const {return (nextWeight);};
+		weight_t							GetGradient() const {return (gradient);};
 
 		static std::vector<Connection *>	GetConnections() {return (connections);};
 

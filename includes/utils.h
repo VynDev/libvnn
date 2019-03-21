@@ -23,7 +23,10 @@ namespace vyn::neuralnetwork
 
 	// DEBUG
 
-	void	CheckValue(value_t value, std::string msg);
+	namespace debug
+	{
+		void	CheckValue(value_t value, std::string msg);
+	}
 }
 
 #endif

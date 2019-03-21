@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-16 18:37:47
+* @Last Modified time: 2019-03-17 17:55:11
 */
 
 #include "Network.h"
@@ -61,6 +61,8 @@ namespace vyn::neuralnetwork {
 		std::cout << "Training, batch size = " << batchSize << ", nbIteration = " << nbIteration << std::endl;
 		for (int i = 0; i < nbIteration; ++i)
 		{
+			//if (i % 1000 == 0 && i != 0)
+				//SetLearningRate(GetLearningRate() * 0.90);
 			std::cout << "Iteration n°" << i << std::endl;
 			for (int j = 0; j < inputs.size(); j += batchSize)
 			{

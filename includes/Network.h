@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <float.h>
 
 #include "types.h"
 #include "utils.h"
@@ -14,7 +15,7 @@
 
 //#define DEBUG // Comment this line to disable debug mode
 #ifdef DEBUG
-	#define DEBUG_CHECK_VALUE(x, msg) CheckValue(x, std::string(__FUNCTION__) + std::string(": ") + msg)
+	#define DEBUG_CHECK_VALUE(x, msg) debug::CheckValue(x, std::string(__FUNCTION__) + std::string(": ") + msg)
 #else
 	#define DEBUG_CHECK_VALUE(x, msg)
 #endif
@@ -30,6 +31,7 @@ namespace vyn::neuralnetwork {
 		value_t						learningRate = 0.1;
 		value_t						gradientClipping = 0;
 		value_t						weightPenality = 0;
+		bool						normalizedGradient = false;
 
 		value_t						(*costFunction)(std::vector<Neuron *>, values_t) = nullptr;
 		value_t						(*costFunctionDerivative)(std::vector<Neuron *>, values_t, Neuron *) = nullptr;
@@ -69,6 +71,7 @@ namespace vyn::neuralnetwork {
 		void						SetLearningRate(value_t newValue) {learningRate = newValue;};
 		void						SetGradientClipping(value_t newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
 		void						SetWeightPenality(value_t newValue) {weightPenality = (newValue < 0 ? -newValue : newValue);};
+		void						SetNormalizedGradient(bool newValue) {normalizedGradient = newValue;};
 
 		void						SetCostFunction(int functionId);
 		void						SetCostFunction(value_t (*f)(std::vector<Neuron *>, values_t)) {costFunctionId = 0; costFunction = f;};

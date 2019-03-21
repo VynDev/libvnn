@@ -2,18 +2,21 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-16 19:03:38
+* @Last Modified time: 2019-03-20 17:20:16
 */
 
 #include <iostream>
 #include <sstream>
 #include <cmath>
 #include <fstream>
+#include <float.h>
 
 #include "Network.h"
 #include "Layer.h"
 #include "Neuron.h"
 #include "Connection.h"
+
+#define ABS(x) (x < 0 ? -x : x)
 
 namespace vyn::neuralnetwork {
 
@@ -121,8 +124,12 @@ namespace vyn::neuralnetwork {
 			DEBUG_CHECK_VALUE(connections[i]->GetOutput()->GetDerivedValue(neuron), "Derived value w.r.t neuron (self)");
 			DEBUG_CHECK_VALUE(currentDerivedValue, "Current derived value for self");
 			currentDerivedValue += (connections[i]->GetOutput()->GetDerivedError() * connections[i]->GetOutput()->GetDerivedValue(neuron));
-			DEBUG_CHECK_VALUE(currentDerivedValue, "New current derived value for self (" + std::to_string(connections[i]->GetOutput()->GetDerivedError()) + " * " + std::to_string(connections[i]->GetOutput()->GetDerivedValue(neuron)) + ")");
+			DEBUG_CHECK_VALUE(currentDerivedValue, "New current derived value for self (" + std::to_string(connections[i]->GetOutput()->GetDerivedError()) + " * " + std::to_string(connections[i]->GetOutput()->GetDerivedValue(neuron)));
 		}
+		if (currentDerivedValue == INFINITY)
+			currentDerivedValue = DBL_MAX;
+		else if (currentDerivedValue == -INFINITY)
+			currentDerivedValue = -DBL_MAX;
 		neuron->SetDerivedError(currentDerivedValue);
 		UpdateNeuronWeights(neuron);
 	}
@@ -138,31 +145,10 @@ namespace vyn::neuralnetwork {
 
 			DEBUG_CHECK_VALUE(neuron->GetDerivedError(), "Current derived error");
 			DEBUG_CHECK_VALUE(neuron->GetDerivedValue(connections[i]), "Derived value w.r.t connection");
-			gradient = learningRate * (neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i]));
-			DEBUG_CHECK_VALUE(gradient, "gradient value from derived value after learning rate");
+			gradient = neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i]);
+			DEBUG_CHECK_VALUE(gradient, "gradient of weight");
 
-			if (gradientClipping != 0)
-			{
-				if (gradient > gradientClipping)
-					gradient = gradientClipping;
-				else if (gradient < -gradientClipping)
-					gradient = -gradientClipping;
-			}
-			if (weightPenality != 0)
-			{
-				if (connections[i]->GetWeight() < -weightPenality)
-					gradient = gradient * (weightPenality / -connections[i]->GetWeight());
-				else if (connections[i]->GetWeight() > weightPenality)
-					gradient = gradient * (weightPenality / connections[i]->GetWeight());
-			}
-
-			if (connections[i]->GetWeight() - gradient < -1000 || connections[i]->GetWeight() - gradient > 1000)
-			{
-				std::cout << "Weight too high: " << connections[i]->GetWeight() << " - " << gradient << std::endl;
-				throw std::string("Weight problem: ") + std::to_string(connections[i]->GetWeight() - gradient);
-			}
-			connections[i]->SetNextWeight(connections[i]->GetWeight() - gradient);
-			DEBUG_CHECK_VALUE(connections[i]->GetNextWeight(), "weight value after delta update");
+			connections[i]->SetGradient(gradient);
 			connections[i]->SetShouldUpdate(true);
 		}
 	}
@@ -207,16 +193,61 @@ namespace vyn::neuralnetwork {
 	void					Network::UpdateWeights()
 	{
 		std::vector<Connection *>		connections;
+		value_t							maxGradient;
+		bool							maxGradientFound = false;
 
 		connections = Connection::GetConnections();
+		if (normalizedGradient)
+		{
+			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+			{
+				if (connections[i]->ShouldUpdate())
+				{
+					value_t gradient;
+
+					gradient = connections[i]->GetGradient();
+					if (maxGradientFound == false || ABS(gradient) > maxGradient)
+					{
+						maxGradient = ABS(gradient);
+						maxGradientFound = true;
+					}
+				}
+			}
+			if (maxGradient < 1)
+				maxGradient = 1;
+		}
 		for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
 		{
 			if (connections[i]->ShouldUpdate())
 			{
-				weight_t newWeight;
+				value_t gradient;
 
-				newWeight = connections[i]->GetNextWeight();
-				connections[i]->SetWeight(newWeight);
+				gradient = connections[i]->GetGradient();
+				if (normalizedGradient)
+				{
+					gradient = gradient / maxGradient;
+					//std::cout << maxGradient << std::endl;
+					DEBUG_CHECK_VALUE(gradient, "gradient value after normalization");
+				}
+				gradient = learningRate * gradient;
+				DEBUG_CHECK_VALUE(gradient, "gradient value after learning rate");
+
+				if (weightPenality != 0)
+				{
+					if (connections[i]->GetWeight() < -weightPenality)
+						gradient = gradient * (weightPenality / -connections[i]->GetWeight());
+					else if (connections[i]->GetWeight() > weightPenality)
+						gradient = gradient * (weightPenality / connections[i]->GetWeight());
+				}
+				
+				if (gradientClipping != 0)
+				{
+					if (gradient > gradientClipping)
+						gradient = gradientClipping;
+					else if (gradient < -gradientClipping)
+						gradient = -gradientClipping;
+				}
+				connections[i]->SetWeight(connections[i]->GetWeight() - gradient);
 				connections[i]->SetShouldUpdate(false);
 			}
 		}

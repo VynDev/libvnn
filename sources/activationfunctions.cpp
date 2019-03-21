@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-03 14:49:12
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-16 18:37:32
+* @Last Modified time: 2019-03-20 16:08:25
 */
 
 #include <cmath>
@@ -20,8 +20,8 @@ namespace vyn::neuralnetwork {
 		value_t	result;
 
 		result = 1 / (1 + (exp(-x)));
-		DEBUG_CHECK_VALUE(-x, "Sigmoid x (" + std::to_string(neuron->GetId()) + ")");
-		DEBUG_CHECK_VALUE(result, "Sigmoid (" + std::to_string(neuron->GetId()) + ")");
+		DEBUG_CHECK_VALUE(-x, "Sigmoid x");
+		DEBUG_CHECK_VALUE(result, "Sigmoid");
 		return (result);
 	}
 
@@ -30,8 +30,8 @@ namespace vyn::neuralnetwork {
 		value_t	result;
 
 		result = Sigmoid(neuron, x) * (1 - Sigmoid(neuron, x));
-		DEBUG_CHECK_VALUE(x, "Sigmoid derivative x (" + std::to_string(neuron->GetId()) + ")");
-		DEBUG_CHECK_VALUE(result, "Sigmoid derivative (" + std::to_string(neuron->GetId()) + ")");
+		DEBUG_CHECK_VALUE(x, "Sigmoid derivative x");
+		DEBUG_CHECK_VALUE(result, "Sigmoid derivative");
 		return (result);
 	}
 
@@ -42,15 +42,16 @@ namespace vyn::neuralnetwork {
 		value_t					result;
 
 		sum = 0.0000001;
+		//sum = 0;
 		outputNeurons = neuron->GetParentLayer()->GetNeurons();
 		for (std::vector<Neuron *>::size_type i = 0; i < outputNeurons.size(); ++i)
 		{
 			sum += exp(outputNeurons[i]->GetRawValue());
 		}
 		result = exp(x) / sum;
-		DEBUG_CHECK_VALUE(x, "Softmax x(" + std::to_string(neuron->GetId()) + ")");
-		DEBUG_CHECK_VALUE(sum, "Softmax sum (" + std::to_string(neuron->GetId()) + ")");
-		DEBUG_CHECK_VALUE(result, "Softmax (" + std::to_string(neuron->GetId()) + ")");
+		DEBUG_CHECK_VALUE(x, "Softmax x");
+		DEBUG_CHECK_VALUE(sum, "Softmax sum");
+		DEBUG_CHECK_VALUE(result, "Softmax");
 		return (result);
 	}
 
@@ -59,8 +60,8 @@ namespace vyn::neuralnetwork {
 		value_t	result;
 
 		result = Softmax(neuron, 1 - Softmax(neuron, x));
-		DEBUG_CHECK_VALUE(x, "Softmax derivative x (" + std::to_string(neuron->GetId()) + ")");
-		DEBUG_CHECK_VALUE(result, "Softmax derivative (" + std::to_string(neuron->GetId()) + ")");
+		DEBUG_CHECK_VALUE(x, "Softmax derivative x");
+		DEBUG_CHECK_VALUE(result, "Softmax derivative");
 		return (result);
 	}
 }

@@ -2,12 +2,13 @@
 * @Author: Vyn
 * @Date:   2019-03-04 14:44:05
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-16 18:19:36
+* @Last Modified time: 2019-03-20 16:07:16
 */
 
 #include <cmath>
 #include <string>
 #include <iostream>
+#include <float.h>
 
 #include "Network.h"
 #include "types.h"
@@ -38,6 +39,9 @@ value_t	SquaredErrorDerivative(std::vector<Neuron *> outputNeurons, std::vector<
 	throw std::string("Can't derivate cost function with respect to neuron");
 }
 
+value_t	highLimit = 0.999999;
+value_t	lowLimit = 0.0000001;
+
 value_t	CrossEntropy(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput)
 {
 	value_t		total;
@@ -45,11 +49,20 @@ value_t	CrossEntropy(std::vector<Neuron *> outputNeurons, std::vector<value_t> e
 	total = 0;
 	for (std::vector<value_t>::size_type i = 0; i < outputNeurons.size(); ++i)
 	{
-		DEBUG_CHECK_VALUE(outputNeurons[i]->GetValue(), "Neuron ouputs " + std::to_string(i));
-		if (outputNeurons[i]->GetValue() > 0.00001 && outputNeurons[i]->GetValue() < 0.99)
-			total += -(expectedOutput[i] * log(outputNeurons[i]->GetValue()) + (1 - expectedOutput[i]) * log((1 - outputNeurons[i]->GetValue())));
+		DEBUG_CHECK_VALUE(outputNeurons[i]->GetValue(), "Neuron ouputs");
+		if ((expectedOutput[i] == 0 && outputNeurons[i]->GetValue() < DBL_MIN) || (expectedOutput[i] == 1 && 1 - outputNeurons[i]->GetValue() < DBL_MIN))
+			total += 0;
+		else if ((expectedOutput[i] == 0 && 1 - outputNeurons[i]->GetValue() < DBL_MIN) || (expectedOutput[i] == 1 && outputNeurons[i]->GetValue() < DBL_MIN))
+			total += -log(DBL_MIN);
 		else
-			total += expectedOutput[i] * (1 - outputNeurons[i]->GetValue()) + (1 - expectedOutput[i]) * outputNeurons[i]->GetValue();
+		{
+			value_t	currentValue;
+
+			currentValue = -(expectedOutput[i] * log(outputNeurons[i]->GetValue()) + (1 - expectedOutput[i]) * log(1 - outputNeurons[i]->GetValue()));
+			DEBUG_CHECK_VALUE(currentValue, "Current value (loop)");
+			total += currentValue;
+			DEBUG_CHECK_VALUE(total, "Total error (loop)");
+		}
 	}
 	DEBUG_CHECK_VALUE(total, "Total error");
 	return (total);
@@ -58,20 +71,25 @@ value_t	CrossEntropy(std::vector<Neuron *> outputNeurons, std::vector<value_t> e
 value_t	CrossEntropyDerivative(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput, Neuron *outputNeuron)
 {
 	value_t		result;
+	value_t		leftResult;
+	value_t		rightResult;
+
 	for (std::vector<value_t>::size_type i = 0; i < outputNeurons.size(); ++i)
 	{
 		if (outputNeuron->GetId() == outputNeurons[i]->GetId())
 		{
 			DEBUG_CHECK_VALUE(expectedOutput[i], "Expected output");
-			DEBUG_CHECK_VALUE(outputNeuron]->GetValue(), "Neuron output");
-			if ((expectedOutput[i] == 1 && outputNeuron->GetValue() >= 0.999999) || (expectedOutput[i] == 0 && outputNeuron->GetValue() <= 0.0000001))
+			DEBUG_CHECK_VALUE(outputNeuron->GetValue(), "Neuron output");
+			if ((expectedOutput[i] == 0 && outputNeuron->GetValue() < DBL_MIN) || (expectedOutput[i] == 1 && 1 - outputNeuron->GetValue() < DBL_MIN))
 				return (0);
-			if (expectedOutput[i] == 1 && outputNeuron->GetValue() < 0.0000001)
-				return (-5);
-			if (expectedOutput[i] == 0 && outputNeuron->GetValue() > 0.999999)
-				return (5);
-			result = -((expectedOutput[i] / outputNeuron->GetValue()) - ((1 - expectedOutput[i]) / (1 - outputNeuron->GetValue())));
-			DEBUG_CHECK_VALUE(result, "Derivative of cost function result error. Expected neuron output: " + std::to_string(expectedOutput[i]) + ", neuron ouput: " + std::to_string(outputNeuron->GetValue()));
+	
+			leftResult = (outputNeuron->GetValue() < DBL_MIN ? expectedOutput[i] / DBL_MIN : expectedOutput[i] / outputNeuron->GetValue());
+			rightResult = (1 - outputNeuron->GetValue() < DBL_MIN ? (1 - expectedOutput[i]) / DBL_MIN : (1 - expectedOutput[i]) / (1 - outputNeuron->GetValue()));
+			DEBUG_CHECK_VALUE(leftResult, "leftResult");
+			DEBUG_CHECK_VALUE(rightResult, "rightResult");
+			result = -(leftResult - rightResult);
+			//DEBUG_CHECK_VALUE(result, "Derivative of cost function result error. Expected neuron output: " + std::to_string(expectedOutput[i]) + ", neuron ouput: " + std::to_string(outputNeuron->GetValue()));
+			DEBUG_CHECK_VALUE(result, "Derivative of cost function result error");
 			return (result);
 		}
 	}
