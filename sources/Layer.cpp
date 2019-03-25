@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-20 13:29:19
+* @Last Modified time: 2019-03-23 20:36:12
 */
 
 #include <iostream>
@@ -15,7 +15,6 @@ namespace vyn::neuralnetwork {
 	Layer::Layer(int nbNeuron, int functionId, int nbBias)
 	{
 		++nbLayer;
-		(void)functionId;
 		for (int i = 0; i < nbNeuron; ++i)
 		{
 			AddNeuron(functionId);
@@ -70,15 +69,29 @@ namespace vyn::neuralnetwork {
 
 	void					Layer::ComputeValues()
 	{
-		for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+		if (twoStepActivationEnabled)
 		{
+			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+			{
 			if (!neurons[i]->IsBias())
 				neurons[i]->ComputeValue();
+			}
+			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+			{
+				if (!neurons[i]->IsBias())
+					neurons[i]->ActivateFunction();
+			}
 		}
-		for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+		else
 		{
-			if (!neurons[i]->IsBias())
-				neurons[i]->ActivateFunction();
+			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+			{
+				if (!neurons[i]->IsBias())
+				{
+					neurons[i]->ComputeValue();
+					neurons[i]->ActivateFunction();
+				}
+			}
 		}
 	}
 

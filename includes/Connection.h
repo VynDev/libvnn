@@ -18,7 +18,7 @@ namespace vyn::neuralnetwork {
 		const int							id = nbConnection;
 		Neuron								*input = nullptr;
 		Neuron								*output = nullptr;
-		weight_t							weight = ((value_t)rand() / (value_t)RAND_MAX) - 0.5; //0.3 + (((value_t)rand() / (value_t)RAND_MAX) * 0.7);
+		weight_t							weight = ((value_t)rand() / (value_t)RAND_MAX < 0.5 ? (value_t)rand() / (value_t)RAND_MAX * -0.6 - 0.2 : (value_t)rand() / (value_t)RAND_MAX * 0.6 + 0.2); //0.3 + (((value_t)rand() / (value_t)RAND_MAX) * 0.7);
 		value_t								gradient = 0;
 
 		bool								shouldUpdate = false;

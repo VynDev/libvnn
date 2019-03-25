@@ -26,17 +26,27 @@ namespace vyn::neuralnetwork {
 
 	private:
 
-		std::vector<Layer *>		layers;
+		/*
+		**	Global neural network
+		*/
 
-		value_t						learningRate = 0.1;
-		value_t						gradientClipping = 0;
-		value_t						weightPenality = 0;
-		bool						normalizedGradient = false;
+		std::vector<Layer *>		layers;
 
 		value_t						(*costFunction)(std::vector<Neuron *>, values_t) = nullptr;
 		value_t						(*costFunctionDerivative)(std::vector<Neuron *>, values_t, Neuron *) = nullptr;
 		int							costFunctionId = 0;
 		std::vector<value_t>		lastPredictionValues;
+
+		/*
+		**	Supervised learning
+		*/
+
+		value_t						learningRate = 0.1;
+		value_t						gradientClipping = 0;
+		value_t						weightPenality = 0;
+		bool						normalizedGradient = false;
+		value_t						errorPropagationLimit = 0;
+
 
 		void						UpdateWeights();
 
@@ -45,7 +55,7 @@ namespace vyn::neuralnetwork {
 		Network();
 
 		/*
-		**	Global neural network functions
+		**	Global neural network
 		*/
 
 		Layer						*GetInputLayer() const;
@@ -60,24 +70,27 @@ namespace vyn::neuralnetwork {
 		void						SaveTo(std::string fileName);
 
 		/*
-		**	Supervised learning functions
+		**	Supervised learning
 		*/
 
 		value_t						GetLearningRate() const {return (learningRate);};
-		int							GetCostFunctionId() const {return (costFunctionId);};
+		void						SetLearningRate(value_t newValue) {learningRate = newValue;};
+
 		value_t						GetCost(values_t expectedOutput);
 		value_t						GetDerivedCost(values_t expectedOutput, Neuron *outputNeuron);
-
-		void						SetLearningRate(value_t newValue) {learningRate = newValue;};
-		void						SetGradientClipping(value_t newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
-		void						SetWeightPenality(value_t newValue) {weightPenality = (newValue < 0 ? -newValue : newValue);};
-		void						SetNormalizedGradient(bool newValue) {normalizedGradient = newValue;};
+		int							GetCostFunctionId() const {return (costFunctionId);};
 
 		void						SetCostFunction(int functionId);
 		void						SetCostFunction(value_t (*f)(std::vector<Neuron *>, values_t)) {costFunctionId = 0; costFunction = f;};
 		void						SetCostFunctionDerivative(value_t (*f)(std::vector<Neuron *>, values_t, Neuron *)) {costFunctionId = 0; costFunctionDerivative = f;};
 
+		void						SetGradientClipping(value_t newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
+		void						SetWeightPenality(value_t newValue) {weightPenality = (newValue < 0 ? -newValue : newValue);};
+		void						EnableNormalizedGradient(bool newValue) {normalizedGradient = newValue;};
+		void						SetErrorPropagationLimit(value_t newValue) {errorPropagationLimit = newValue;};
+
 		void						Fit(std::vector<std::vector<value_t>> inputs, std::vector<std::vector<value_t>> outputs, int batchSize, int nbIteration, std::stringstream *csv);
+		value_t						TrainBatch(Network *network, std::vector<std::vector<value_t>> &inputs, std::vector<std::vector<value_t>> &expectedOutputs, int batchSize, int i);
 		void						Propagate(values_t goodValues);
 		void						Propagate(values_t goodValues, values_t derivedCost);
 		void						UpdateNeuronWeights(Neuron *neuron);

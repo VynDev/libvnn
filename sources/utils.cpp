@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-13 12:53:26
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-16 19:13:30
+* @Last Modified time: 2019-03-22 14:10:22
 */
 
 #include <iostream>
@@ -12,7 +12,19 @@
 
 namespace vyn::neuralnetwork::scale {
 
-	value_t	GetMin(std::vector<std::vector<value_t>> &inputs, int i)
+	value_t GetMean(std::vector<std::vector<value_t>> &inputs, int i)
+	{
+		value_t	total;
+
+		total = 0;
+		for (int j = 0; j < inputs.size(); ++j)
+		{
+			total += inputs[j][i];
+		}
+		return (total / inputs.size());
+	}
+
+	value_t GetMin(std::vector<std::vector<value_t>> &inputs, int i)
 	{
 		value_t	min;
 
@@ -38,20 +50,75 @@ namespace vyn::neuralnetwork::scale {
 		return (max);
 	}
 
-	void	MinMax(std::vector<std::vector<value_t>> &inputs)
+	std::vector<ScaleData_t> MinMax(std::vector<std::vector<value_t>> &inputs)
 	{
-		std::vector<value_t>	firstLine;
+		std::vector<ScaleData_t>	scaleDatas;
+		std::vector<value_t>		firstLine;
 
 		firstLine = inputs[0];
 		for (int i = 0; i < firstLine.size(); ++i)
 		{
-			value_t	min = GetMin(inputs, i);
-			value_t max = GetMax(inputs, i);
+			ScaleData_t		scaleData;
+			scaleData.min = GetMin(inputs, i);
+			scaleData.max = GetMax(inputs, i);
 			for (int j = 0; j < inputs.size(); ++j)
 			{
-				inputs[j][i] = (inputs[j][i] - min) / (max - min);
+				inputs[j][i] = (inputs[j][i] - scaleData.min) / (scaleData.max - scaleData.min);
+			}
+			scaleDatas.push_back(scaleData);
+		}
+		return (scaleDatas);
+	}
+
+	std::vector<ScaleData_t> MinMax(std::vector<std::vector<value_t>> &inputs, std::vector<ScaleData_t> &scaleDatas)
+	{
+		std::vector<value_t>		firstLine;
+
+		firstLine = inputs[0];
+		for (int i = 0; i < firstLine.size(); ++i)
+		{
+			for (int j = 0; j < inputs.size(); ++j)
+			{
+				inputs[j][i] = (inputs[j][i] - scaleDatas[i].min) / (scaleDatas[i].max - scaleDatas[i].min);
 			}
 		}
+		return (scaleDatas);
+	}
+
+	std::vector<ScaleData_t> MeanNormalisation(std::vector<std::vector<value_t>> &inputs)
+	{
+		std::vector<ScaleData_t>	scaleDatas;
+		std::vector<value_t>		firstLine;
+
+		firstLine = inputs[0];
+		for (int i = 0; i < firstLine.size(); ++i)
+		{
+			ScaleData_t		scaleData;
+			scaleData.mean = GetMean(inputs, i);
+			scaleData.min = GetMin(inputs, i);
+			scaleData.max = GetMax(inputs, i);
+			for (int j = 0; j < inputs.size(); ++j)
+			{
+				inputs[j][i] = (inputs[j][i] - scaleData.mean) / (scaleData.max - scaleData.min);
+			}
+			scaleDatas.push_back(scaleData);
+		}
+		return (scaleDatas);
+	}
+
+	std::vector<ScaleData_t> MeanNormalisation(std::vector<std::vector<value_t>> &inputs, std::vector<ScaleData_t> &scaleDatas)
+	{
+		std::vector<value_t>		firstLine;
+
+		firstLine = inputs[0];
+		for (int i = 0; i < firstLine.size(); ++i)
+		{
+			for (int j = 0; j < inputs.size(); ++j)
+			{
+				inputs[j][i] = (inputs[j][i] - scaleDatas[i].mean) / (scaleDatas[i].max - scaleDatas[i].min);
+			}
+		}
+		return (scaleDatas);
 	}
 }
 

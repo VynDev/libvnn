@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-04 14:44:05
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-20 16:07:16
+* @Last Modified time: 2019-03-25 10:35:12
 */
 
 #include <cmath>
@@ -38,9 +38,6 @@ value_t	SquaredErrorDerivative(std::vector<Neuron *> outputNeurons, std::vector<
 	}
 	throw std::string("Can't derivate cost function with respect to neuron");
 }
-
-value_t	highLimit = 0.999999;
-value_t	lowLimit = 0.0000001;
 
 value_t	CrossEntropy(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput)
 {
@@ -83,8 +80,8 @@ value_t	CrossEntropyDerivative(std::vector<Neuron *> outputNeurons, std::vector<
 			if ((expectedOutput[i] == 0 && outputNeuron->GetValue() < DBL_MIN) || (expectedOutput[i] == 1 && 1 - outputNeuron->GetValue() < DBL_MIN))
 				return (0);
 	
-			leftResult = (outputNeuron->GetValue() < DBL_MIN ? expectedOutput[i] / DBL_MIN : expectedOutput[i] / outputNeuron->GetValue());
-			rightResult = (1 - outputNeuron->GetValue() < DBL_MIN ? (1 - expectedOutput[i]) / DBL_MIN : (1 - expectedOutput[i]) / (1 - outputNeuron->GetValue()));
+			leftResult = (outputNeuron->GetValue() < DBL_MIN ? expectedOutput[i] / DBL_MIN : expectedOutput[i] / outputNeuron->GetValue()) - 1;
+			rightResult = (1 - outputNeuron->GetValue() < DBL_MIN ? (1 - expectedOutput[i]) / DBL_MIN : (1 - expectedOutput[i]) / (1 - outputNeuron->GetValue())) - 1;
 			DEBUG_CHECK_VALUE(leftResult, "leftResult");
 			DEBUG_CHECK_VALUE(rightResult, "rightResult");
 			result = -(leftResult - rightResult);

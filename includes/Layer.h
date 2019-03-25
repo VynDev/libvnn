@@ -24,6 +24,7 @@ namespace vyn::neuralnetwork {
 		Layer											*output = nullptr;
 		int												type = LAYER_UNCONNECTED;
 		int												nbBias = 0;
+		bool											twoStepActivationEnabled = true;
 
 	public:
 
@@ -35,6 +36,7 @@ namespace vyn::neuralnetwork {
 		void											AddBias();
 		void											ComputeValues();
 		void											Describe(bool showNeuronsValue = false);
+		void											EnableTwoStepActivation(bool newValue) {twoStepActivationEnabled = newValue;};
 
 		std::vector<vyn::neuralnetwork::Neuron *>		GetNeurons() const {return (neurons);};
 		std::vector<value_t>							GetValues() const;
