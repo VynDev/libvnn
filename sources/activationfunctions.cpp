@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-03 14:49:12
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-21 09:30:39
+* @Last Modified time: 2019-03-26 17:09:17
 */
 
 #include <cmath>
@@ -41,7 +41,7 @@ namespace vyn::neuralnetwork {
 		value_t					sum;
 		value_t					result;
 
-		sum = 0.0000001;
+		sum = DBL_MIN;
 		//sum = 0;
 		outputNeurons = neuron->GetParentLayer()->GetNeurons();
 		for (std::vector<Neuron *>::size_type i = 0; i < outputNeurons.size(); ++i)
@@ -63,6 +63,7 @@ namespace vyn::neuralnetwork {
 		result = Softmax(neuron, 1 - Softmax(neuron, x));
 		DEBUG_CHECK_VALUE(x, "Softmax derivative x");
 		DEBUG_CHECK_VALUE(result, "Softmax derivative");
+		//std::cout << "softmax derivative: " << result << std::endl;
 		return (result);
 	}
 }

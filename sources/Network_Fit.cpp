@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-25 11:00:57
+* @Last Modified time: 2019-03-27 13:36:14
 */
 
 #include "Network.h"
@@ -54,43 +54,68 @@ namespace vyn::neuralnetwork {
 		return (totalCost);
 	}
 
-	void					Network::Fit(std::vector<std::vector<value_t>> inputs, std::vector<std::vector<value_t>> outputs, int batchSize, int nbIteration, std::stringstream *csv)
+	value_t					ValidationSet(Network *network, TrainingParameters_t &parameters)
 	{
-		value_t					lastTotalCost = -1;
+		value_t	totalCost;
+
+		totalCost = 0;
+		for (int i = 0; i < parameters.validationSetInputs.size(); ++i)
+		{
+			totalCost += PredictOne(network, parameters.validationSetInputs[i], parameters.validationSetOutputs[i]);
+		}
+		totalCost = totalCost / parameters.validationSetInputs.size();
+		return (totalCost);
+	}
+
+	void					Network::Fit(TrainingParameters_t parameters, int batchSize, int nbIteration)
+	{
+		value_t					totalCost;
+		value_t					validationCost = -1;
+		value_t					lastValidationCost = -1;
 		int						noImprovementEpoch = 0;
-		int						noImprovementEpochLimit = 100;
+		int						noImprovementEpochLimit = 0;
 		int						k;
 
-		value_t					totalCost;
 		std::cout << "Training, batch size = " << batchSize << ", nbIteration = " << nbIteration << std::endl;
+		*(parameters.trainingCsv) << parameters.trainingSetInputs.size() << std::endl;
+		*(parameters.trainingCsv) << batchSize << std::endl;
+		*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
+		*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
 		for (int i = 0; i < nbIteration; ++i)
 		{
 			totalCost = 0;
 			k = 0;
-			for (int j = 0; j < inputs.size(); j += batchSize)
+			for (int j = 0; j < parameters.trainingSetInputs.size(); j += batchSize)
 			{
 				value_t		cost;
-				cost = TrainBatch(this, inputs, outputs, batchSize, j);
+				cost = TrainBatch(this, parameters.trainingSetInputs, parameters.trainingSetOutputs, batchSize, j);
 				totalCost += cost;
 				++k;
-				if (csv != nullptr)
-					*csv << cost << std::endl;
-				//std::cout << "Cost: " << cost << std::endl;
+				if (parameters.trainingCsv != nullptr)
+					*(parameters.trainingCsv) << cost << std::endl;
 				DEBUG_CHECK_VALUE(cost, "Cost");
 			}
-			// early stopping
 			totalCost = totalCost / k;
 			std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
-			++noImprovementEpoch;
-			
-			if (lastTotalCost == -1 || totalCost != lastTotalCost)
-				noImprovementEpoch = 0;
-			if (noImprovementEpoch > noImprovementEpochLimit)
+			if (parameters.validationCsv != nullptr)
 			{
-				std::cout << "Training finished (early stopping)" << std::endl;
-				return ;
+				validationCost = ValidationSet(this, parameters);
+				*(parameters.validationCsv) << validationCost << std::endl;
 			}
-			lastTotalCost = totalCost;
+			// early stopping
+			if (earlyStoppingEnabled && validationCost != -1)
+			{
+				++noImprovementEpoch;
+				if (lastValidationCost == -1 || validationCost < lastValidationCost)
+					noImprovementEpoch = 0;
+				if (noImprovementEpoch > noImprovementEpochLimit)
+				{
+					std::cout << "Training finished (early stopping)" << std::endl;
+					return ;
+				}
+				lastValidationCost = validationCost;
+			}
+			
 		}
 		std::cout << "Training finished" << std::endl;
 	}

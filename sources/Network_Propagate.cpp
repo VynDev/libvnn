@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-24 10:06:27
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-24 10:08:34
+* @Last Modified time: 2019-03-27 13:19:40
 */
 
 #include <iostream>
@@ -35,10 +35,12 @@ namespace vyn::neuralnetwork {
 			currentDerivedValue += (connections[i]->GetOutput()->GetDerivedError() * connections[i]->GetOutput()->GetDerivedValue(neuron));
 			DEBUG_CHECK_VALUE(currentDerivedValue, "New current derived value for self (" + std::to_string(connections[i]->GetOutput()->GetDerivedError()) + " * " + std::to_string(connections[i]->GetOutput()->GetDerivedValue(neuron)));
 		}
-		if (currentDerivedValue == INFINITY)
+		/*if (currentDerivedValue == INFINITY)
 			currentDerivedValue = DBL_MAX;
 		else if (currentDerivedValue == -INFINITY)
-			currentDerivedValue = -DBL_MAX;
+			currentDerivedValue = -DBL_MAX;*/
+		if (std::isinf(currentDerivedValue))
+			throw std::string("current derived value inf");
 		neuron->SetDerivedError(currentDerivedValue);
 		UpdateNeuronWeights(neuron);
 	}
@@ -55,6 +57,7 @@ namespace vyn::neuralnetwork {
 			DEBUG_CHECK_VALUE(neuron->GetDerivedError(), "Current derived error");
 			DEBUG_CHECK_VALUE(neuron->GetDerivedValue(connections[i]), "Derived value w.r.t connection");
 			gradient = neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i]);
+			//std::cout << neuron->GetDerivedError() << " * " << neuron->GetDerivedValue(connections[i]) << " " << neuron->GetActivationFunctionId() << std::endl;
 			DEBUG_CHECK_VALUE(gradient, "gradient of weight");
 
 			connections[i]->SetGradient(gradient);
@@ -74,6 +77,7 @@ namespace vyn::neuralnetwork {
 			outputLayerNeurons[i]->SetDerivedError(derivedCost[i]);
 			UpdateNeuronWeights(outputLayerNeurons[i]);
 		}
+		
 		for (std::vector<Layer *>::size_type i = 0; i < layers.size() - 1; ++i)
 		{
 			neurons = layers[(layers.size() - 2) - i]->GetNeurons();
@@ -140,15 +144,6 @@ namespace vyn::neuralnetwork {
 				}
 				gradient = learningRate * gradient;
 				DEBUG_CHECK_VALUE(gradient, "gradient value after learning rate");
-
-				if (weightPenality != 0)
-				{
-					if (connections[i]->GetWeight() < -weightPenality)
-						gradient = gradient * (weightPenality / -connections[i]->GetWeight());
-					else if (connections[i]->GetWeight() > weightPenality)
-						gradient = gradient * (weightPenality / connections[i]->GetWeight());
-				}
-				
 				if (gradientClipping != 0)
 				{
 					if (gradient > gradientClipping)
@@ -159,8 +154,8 @@ namespace vyn::neuralnetwork {
 				connections[i]->SetWeight(connections[i]->GetWeight() - gradient);
 				connections[i]->SetShouldUpdate(false);
 
-				//if (connections[i]->GetWeight() < -100 || connections[i]->GetWeight() > 100)
-					//throw std::string("Weight too high");
+				if (connections[i]->GetWeight() < -100 || connections[i]->GetWeight() > 100)
+					throw std::string("Weight too high");
 
 			}
 		}

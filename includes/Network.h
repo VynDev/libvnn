@@ -22,6 +22,17 @@
 
 namespace vyn::neuralnetwork {
 
+	typedef struct								TrainingParameters_s
+	{
+		std::vector<std::vector<value_t>>		trainingSetInputs;
+		std::vector<std::vector<value_t>>		trainingSetOutputs;
+		std::vector<std::vector<value_t>>		validationSetInputs;
+		std::vector<std::vector<value_t>>		validationSetOutputs;
+		std::stringstream 						*trainingCsv;
+		std::stringstream 						*validationCsv;
+
+	}											TrainingParameters_t;
+
 	class Network {
 
 	private:
@@ -43,8 +54,8 @@ namespace vyn::neuralnetwork {
 
 		value_t						learningRate = 0.1;
 		value_t						gradientClipping = 0;
-		value_t						weightPenality = 0;
 		bool						normalizedGradient = false;
+		bool						earlyStoppingEnabled = false;
 		value_t						errorPropagationLimit = 0;
 
 
@@ -85,11 +96,11 @@ namespace vyn::neuralnetwork {
 		void						SetCostFunctionDerivative(value_t (*f)(std::vector<Neuron *>, values_t, Neuron *)) {costFunctionId = 0; costFunctionDerivative = f;};
 
 		void						SetGradientClipping(value_t newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
-		void						SetWeightPenality(value_t newValue) {weightPenality = (newValue < 0 ? -newValue : newValue);};
 		void						EnableNormalizedGradient(bool newValue) {normalizedGradient = newValue;};
+		void						EnableEarlyStopping(bool newValue) {earlyStoppingEnabled = newValue;};
 		void						SetErrorPropagationLimit(value_t newValue) {errorPropagationLimit = newValue;};
 
-		void						Fit(std::vector<std::vector<value_t>> inputs, std::vector<std::vector<value_t>> outputs, int batchSize, int nbIteration, std::stringstream *csv);
+		void						Fit(TrainingParameters_t parameters, int batchSize, int nbIteration);
 		value_t						TrainBatch(Network *network, std::vector<std::vector<value_t>> &inputs, std::vector<std::vector<value_t>> &expectedOutputs, int batchSize, int i);
 		void						Propagate(values_t goodValues);
 		void						Propagate(values_t goodValues, values_t derivedCost);

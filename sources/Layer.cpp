@@ -2,13 +2,15 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-23 20:36:12
+* @Last Modified time: 2019-03-26 19:56:58
 */
 
 #include <iostream>
 
 #include "Layer.h"
 #include "Neuron.h"
+
+#define ABS(x) (x < 0 ? -x : x)
 
 namespace vyn::neuralnetwork {
 
@@ -73,8 +75,8 @@ namespace vyn::neuralnetwork {
 		{
 			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
 			{
-			if (!neurons[i]->IsBias())
-				neurons[i]->ComputeValue();
+				if (!neurons[i]->IsBias())
+					neurons[i]->ComputeValue();
 			}
 			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
 			{
