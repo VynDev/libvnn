@@ -6,4 +6,6 @@
 #include "Layer.h"
 #include "Network.h"
 
+#include "utils.h"
+
 #endif

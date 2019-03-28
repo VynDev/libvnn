@@ -6,42 +6,42 @@
 
 #include "types.h"
 
-class Neuron;
+namespace vyn::neuralnetwork {
 
-class Connection {
+	class Connection {
 
-private:
+	private:
 
-	static int							nbConnection;
-	static std::vector<Connection *>	connections;
+		static int							nbConnection;
+		static std::vector<Connection *>	connections;
 
-	const int							id = nbConnection;
-	Neuron								*input = nullptr;
-	Neuron								*output = nullptr;
-	weight_t							weight = (value_t)rand() / (value_t)RAND_MAX;
-	weight_t							nextWeight = -100;
+		const int							id = nbConnection;
+		Neuron								*input = nullptr;
+		Neuron								*output = nullptr;
+		weight_t							weight = ((value_t)rand() / (value_t)RAND_MAX < 0.5 ? (value_t)rand() / (value_t)RAND_MAX * -0.6 - 0.2 : (value_t)rand() / (value_t)RAND_MAX * 0.6 + 0.2); //0.3 + (((value_t)rand() / (value_t)RAND_MAX) * 0.7);
+		value_t								gradient = 0;
 
-	bool								shouldUpdate = false;
+		bool								shouldUpdate = false;
 
-public:
+	public:
 
-	Connection();
+		Connection();
 
-	void								SetInput(Neuron *neuron) {input = neuron;};
-	void								SetOutput(Neuron *neuron) {output = neuron;};
-	void								SetWeight(weight_t newWeight) {weight = newWeight;};
-	void								SetNextWeight(weight_t newNextWeight) {nextWeight = newNextWeight;};
-	void								SetShouldUpdate(bool a) {shouldUpdate = a;};
+		void								SetInput(Neuron *neuron) {input = neuron;};
+		void								SetOutput(Neuron *neuron) {output = neuron;};
+		void								SetWeight(weight_t newWeight) {weight = newWeight;};
+		void								SetGradient(value_t newGradient) {gradient = newGradient;};
+		void								SetShouldUpdate(bool a) {shouldUpdate = a;};
 
-	bool								ShouldUpdate() const {return (shouldUpdate);};
-	int									GetId() const {return (id);};
-	Neuron								*GetInput() const {return (input);};
-	Neuron								*GetOutput() const {return (output);};
-	weight_t							GetWeight() const {return (weight);};
-	weight_t							GetNextWeight() const {return (nextWeight);};
+		bool								ShouldUpdate() const {return (shouldUpdate);};
+		int									GetId() const {return (id);};
+		Neuron								*GetInput() const {return (input);};
+		Neuron								*GetOutput() const {return (output);};
+		weight_t							GetWeight() const {return (weight);};
+		weight_t							GetGradient() const {return (gradient);};
 
-	static std::vector<Connection *>	GetConnections() {return (connections);};
+		static std::vector<Connection *>	GetConnections() {return (connections);};
 
-};
-
+	};
+}
 #endif
