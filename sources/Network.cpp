@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-24 10:08:54
+* @Last Modified time: 2019-04-03 11:45:04
 */
 
 #include <iostream>
@@ -25,10 +25,10 @@ namespace vyn::neuralnetwork {
 
 	}
 
-	void					Network::AddLayer(int nbNeuron, int neuronType, int nbBias)
+	void					Network::AddLayer(int nbNeuron, int neuronType, int weightInitializationFunctionId, int nbBias)
 	{
 		Layer	*newLayer;
-		newLayer = new Layer(nbNeuron, neuronType, nbBias);
+		newLayer = new Layer(nbNeuron, neuronType, weightInitializationFunctionId, nbBias);
 		AddLayer(newLayer);
 	}
 
@@ -36,6 +36,7 @@ namespace vyn::neuralnetwork {
 	{
 		Layer	*lastLayer;
 
+		layer->SetParentNetwork(this);
 		if (layers.size() == 0)
 		{
 			layers.push_back(layer);
@@ -130,13 +131,18 @@ namespace vyn::neuralnetwork {
 		}
 		file << this->GetCostFunctionId() << std::endl;
 
-		std::vector<Connection *>	connections;
-
-		connections = Connection::GetConnections();
 		for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
 		{
 			file << connections[i]->GetWeight() << " ";
 		}
 		file.close();
+	}
+
+	void					Network::RandomizeConnectionsWeight()
+	{
+		for (int i = 0; i < connections.size(); ++i)
+		{
+			connections[i]->SetWeight(connections[i]->GetInput()->GetParentLayer()->NewWeightValue());
+		}
 	}
 }

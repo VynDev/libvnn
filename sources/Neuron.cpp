@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-15 14:02:18
+* @Last Modified time: 2019-04-03 11:54:02
 */
 
 #include <iostream>
@@ -39,6 +39,8 @@ namespace vyn::neuralnetwork {
 		
 		newConnection->SetInput(fromNeuron);
 		newConnection->SetOutput(toNeuron);
+		newConnection->SetWeight(neuron->GetParentLayer()->NewWeightValue());
+		neuron->GetParentLayer()->GetParentNetwork()->AddConnection(newConnection);
 
 		outputs.push_back(newConnection);
 		toNeuron->AddInputConnection(newConnection);

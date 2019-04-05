@@ -2,14 +2,16 @@
 * @Author: Vyn
 * @Date:   2019-03-03 14:49:12
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-26 17:09:17
+* @Last Modified time: 2019-04-05 11:48:13
 */
 
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 
 #include "Network.h"
 #include "Neuron.h"
+#include "Population.h"
 #include "types.h"
 #include "utils.h"
 
@@ -65,5 +67,15 @@ namespace vyn::neuralnetwork {
 		DEBUG_CHECK_VALUE(result, "Softmax derivative");
 		//std::cout << "softmax derivative: " << result << std::endl;
 		return (result);
+	}
+
+	value_t		weightInitialization0(Layer *layer)
+	{
+		return (((value_t)rand() / (value_t)RAND_MAX) * 2 - 1);
+	}
+
+	value_t		weightInitialization1(Layer *layer)
+	{
+		return (((value_t)rand() / (value_t)RAND_MAX < 0.5 ? (value_t)rand() / (value_t)RAND_MAX * -0.6 - 0.2 : (value_t)rand() / (value_t)RAND_MAX * 0.6 + 0.2));
 	}
 }

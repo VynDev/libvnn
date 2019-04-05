@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-13 12:53:26
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-22 14:10:22
+* @Last Modified time: 2019-04-04 10:09:43
 */
 
 #include <iostream>
@@ -124,9 +124,9 @@ namespace vyn::neuralnetwork::scale {
 
 namespace vyn::neuralnetwork
 {
-	Network		Load(std::string fileName)
+	Network		*Load(std::string fileName)
 	{
-		Network							network;
+		Network							*network;
 		Layer							*layer;
 		std::vector<Connection *>	connections;
 
@@ -136,6 +136,7 @@ namespace vyn::neuralnetwork
 		std::string						elem;
 		int								nbLayers;
 
+		network = new Network;
 		file.open(fileName);
 		getline(file, line);
 		std::cout << "Checking string: " << line << std::endl;
@@ -159,14 +160,14 @@ namespace vyn::neuralnetwork
 				std::cout << "Adding neuron with function ID: " << elem << std::endl;
 				layer->AddNeuron(std::stoi(elem));
 			}
-			network.AddLayer(layer);
+			network->AddLayer(layer);
 		}
 		std::cout << "Loading cost function" << std::endl;
 		getline(file, line);
-		network.SetCostFunction(std::stoi(line));
+		network->SetCostFunction(std::stoi(line));
 		getline(file, line);
 		lineStream = std::stringstream(line);
-		connections = Connection::GetConnections();
+		connections = network->GetConnections();
 		int	i = 0;
 		std::cout << "Loading weights" << std::endl;
 		while (getline(lineStream, elem, ' '))

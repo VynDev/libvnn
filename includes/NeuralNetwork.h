@@ -5,6 +5,7 @@
 #include "Connection.h"
 #include "Layer.h"
 #include "Network.h"
+#include "Population.h"
 
 #include "utils.h"
 

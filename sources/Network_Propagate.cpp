@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-24 10:06:27
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-27 13:19:40
+* @Last Modified time: 2019-04-03 11:14:26
 */
 
 #include <iostream>
@@ -105,11 +105,9 @@ namespace vyn::neuralnetwork {
 
 	void					Network::UpdateWeights()
 	{
-		std::vector<Connection *>		connections;
 		value_t							maxGradient;
 		bool							maxGradientFound = false;
 
-		connections = Connection::GetConnections();
 		if (normalizedGradient)
 		{
 			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)

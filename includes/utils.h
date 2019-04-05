@@ -13,7 +13,7 @@
 
 namespace vyn::neuralnetwork
 {
-	Network		Load(std::string fileName);
+	Network		*Load(std::string fileName);
 }
 
 namespace vyn::neuralnetwork::scale

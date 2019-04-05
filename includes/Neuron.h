@@ -5,7 +5,7 @@
 
 #include "Layer.h"
 #include "types.h"
-#include "activationfunctions.h"
+#include "activationFunctions.h"
 
 namespace vyn::neuralnetwork {
 

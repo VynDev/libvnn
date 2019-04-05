@@ -8,7 +8,7 @@
 
 #include "types.h"
 #include "utils.h"
-#include "costfunctions.h"
+#include "costFunctions.h"
 
 #define VYN_NEURALNETWORK_STRING "VYN_NEURALNETWORK"
 #define VYN_NEURALNETWORK_VERSION "0.0.0"
@@ -42,6 +42,7 @@ namespace vyn::neuralnetwork {
 		*/
 
 		std::vector<Layer *>		layers;
+		std::vector<Connection *>	connections;
 
 		value_t						(*costFunction)(std::vector<Neuron *>, values_t) = nullptr;
 		value_t						(*costFunctionDerivative)(std::vector<Neuron *>, values_t, Neuron *) = nullptr;
@@ -72,9 +73,13 @@ namespace vyn::neuralnetwork {
 		Layer						*GetInputLayer() const;
 		Layer						*GetOutputLayer() const;
 		std::vector<Layer *>		GetLayers() const {return (layers);};
+		std::vector<Connection *>	GetConnections() const {return (connections);};
+
+		void						AddConnection(Connection *newConnection) {connections.push_back(newConnection);};
+		void						RandomizeConnectionsWeight();
 
 		void						AddLayer(Layer *layer);
-		void						AddLayer(int nbNeuron, int neuronType = 0, int nbBias = 0);
+		void						AddLayer(int nbNeuron, int neuronType = 0, int weightInitializationFunctionId = 0, int nbBias = 0);
 		
 		std::vector<value_t>		Predict(std::vector<value_t> inputs);
 

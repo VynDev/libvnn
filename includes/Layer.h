@@ -6,6 +6,9 @@
 #define LAYER_HIDDEN 2
 #define LAYER_OUTPUT 3
 
+#define WEIGHT_INIT_0 0
+#define WEIGHT_INIT_1 1
+
 #include <vector>
 #include "types.h"
 
@@ -19,6 +22,7 @@ namespace vyn::neuralnetwork {
 
 		const int										id = nbLayer;
 
+		Network											*parentNetwork;
 		std::vector<vyn::neuralnetwork::Neuron *>		neurons;
 		Layer											*input = nullptr;
 		Layer											*output = nullptr;
@@ -26,9 +30,14 @@ namespace vyn::neuralnetwork {
 		int												nbBias = 0;
 		bool											twoStepActivationEnabled = true;
 
+		value_t											(*weightInitializationFunction)(Layer *) = nullptr;
+
 	public:
 
-		Layer(int nbNeuron, int functionId, int nbBias = 0);
+		Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias = 0);
+
+		void											SetParentNetwork(Network *network) {parentNetwork = network;};
+		Network											*GetParentNetwork() const {return (parentNetwork);};
 
 		void											ConnectTo(Layer *layer);
 		void											AddInput(Layer *layer);
@@ -37,6 +46,9 @@ namespace vyn::neuralnetwork {
 		void											ComputeValues();
 		void											Describe(bool showNeuronsValue = false);
 		void											EnableTwoStepActivation(bool newValue) {twoStepActivationEnabled = newValue;};
+
+		void											SetWeightInitialization(int initializationId);
+		value_t											NewWeightValue() {return ((*weightInitializationFunction)(this));};
 
 		std::vector<vyn::neuralnetwork::Neuron *>		GetNeurons() const {return (neurons);};
 		std::vector<value_t>							GetValues() const;

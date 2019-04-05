@@ -8,6 +8,7 @@ namespace vyn::neuralnetwork {
 	class Connection;
 	class Layer;
 	class Network;
+	class Population;
 
 	typedef double value_t;
 	typedef double weight_t;

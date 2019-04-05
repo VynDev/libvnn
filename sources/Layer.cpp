@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-26 19:56:58
+* @Last Modified time: 2019-04-02 19:19:26
 */
 
 #include <iostream>
@@ -14,8 +14,9 @@
 
 namespace vyn::neuralnetwork {
 
-	Layer::Layer(int nbNeuron, int functionId, int nbBias)
+	Layer::Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias)
 	{
+		SetWeightInitialization(weightInitializationFunctionId);
 		++nbLayer;
 		for (int i = 0; i < nbNeuron; ++i)
 		{
@@ -123,6 +124,14 @@ namespace vyn::neuralnetwork {
 			}
 		}
 		std::cout << "---" << std::endl;
+	}
+
+	void					Layer::SetWeightInitialization(int initializationId)
+	{
+		if (initializationId == WEIGHT_INIT_0)
+			weightInitializationFunction = &weightInitialization0;
+		if (initializationId == WEIGHT_INIT_1)
+			weightInitializationFunction = &weightInitialization1;
 	}
 
 	int	Layer::nbLayer = 0;
