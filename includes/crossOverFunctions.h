@@ -5,8 +5,11 @@
 
 #include "types.h"
 
-namespace vyn::neuralnetwork {
-
-	void		DefaultCrossOverFunction(Population *population);
+namespace vyn
+{
+	namespace neuralnetwork
+	{
+		void		DefaultCrossOverFunction(Population *population);
+	}
 }
 #endif

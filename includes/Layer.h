@@ -12,47 +12,50 @@
 #include <vector>
 #include "types.h"
 
-namespace vyn::neuralnetwork {
+namespace vyn
+{
+	namespace neuralnetwork
+	{
+		class Layer {
 
-	class Layer {
+		private:
 
-	private:
+			static int	nbLayer;
 
-		static int	nbLayer;
+			const int										id = nbLayer;
 
-		const int										id = nbLayer;
+			Network											*parentNetwork;
+			std::vector<vyn::neuralnetwork::Neuron *>		neurons;
+			Layer											*input = nullptr;
+			Layer											*output = nullptr;
+			int												type = LAYER_UNCONNECTED;
+			int												nbBias = 0;
+			bool											twoStepActivationEnabled = true;
 
-		Network											*parentNetwork;
-		std::vector<vyn::neuralnetwork::Neuron *>		neurons;
-		Layer											*input = nullptr;
-		Layer											*output = nullptr;
-		int												type = LAYER_UNCONNECTED;
-		int												nbBias = 0;
-		bool											twoStepActivationEnabled = true;
+			value_t											(*weightInitializationFunction)(Layer *) = nullptr;
 
-		value_t											(*weightInitializationFunction)(Layer *) = nullptr;
+		public:
 
-	public:
+			Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias = 0);
 
-		Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias = 0);
+			void											SetParentNetwork(Network *network) {parentNetwork = network;};
+			Network											*GetParentNetwork() const {return (parentNetwork);};
 
-		void											SetParentNetwork(Network *network) {parentNetwork = network;};
-		Network											*GetParentNetwork() const {return (parentNetwork);};
+			void											ConnectTo(Layer *layer);
+			void											AddInput(Layer *layer);
+			void											AddNeuron(int functionId);
+			void											AddBias();
+			void											ComputeValues();
+			void											Describe(bool showNeuronsValue = false);
+			void											EnableTwoStepActivation(bool newValue) {twoStepActivationEnabled = newValue;};
 
-		void											ConnectTo(Layer *layer);
-		void											AddInput(Layer *layer);
-		void											AddNeuron(int functionId);
-		void											AddBias();
-		void											ComputeValues();
-		void											Describe(bool showNeuronsValue = false);
-		void											EnableTwoStepActivation(bool newValue) {twoStepActivationEnabled = newValue;};
+			void											SetWeightInitialization(int initializationId);
+			value_t											NewWeightValue() {return ((*weightInitializationFunction)(this));};
 
-		void											SetWeightInitialization(int initializationId);
-		value_t											NewWeightValue() {return ((*weightInitializationFunction)(this));};
-
-		std::vector<vyn::neuralnetwork::Neuron *>		GetNeurons() const {return (neurons);};
-		std::vector<value_t>							GetValues() const;
-		int												GetBiasCount() const {return (nbBias);};
-	};
+			std::vector<vyn::neuralnetwork::Neuron *>		GetNeurons() const {return (neurons);};
+			std::vector<value_t>							GetValues() const;
+			int												GetBiasCount() const {return (nbBias);};
+		};
+	}
 }
 #endif

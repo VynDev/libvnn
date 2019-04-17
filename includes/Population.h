@@ -5,52 +5,85 @@
 #include "crossOverFunctions.h"
 #include "types.h"
 
-namespace vyn::neuralnetwork {
-
-	class Population;
-
-	typedef struct	Person_s
+namespace vyn
+{
+	namespace neuralnetwork
 	{
-		Network		*network = nullptr;
-		bool		isSelected = false;
-		int			score = 0;
-		int			generationId;
-		int			id;
-		Population	*population = nullptr;
-	}				Person_t;
+		class Population;
 
-	class Population {
+		class Person
+		{
 
-	private:
+		private:
 
-		std::vector<Person_t *>	population;
+			Network		*network = nullptr;
+			bool		isSelected = false;
+			int			score = 0;
+			int			previousScore = 0;
+			int			generationId;
+			int			id;
+			Population	*population = nullptr;
+			void		*customData = nullptr;
 
-		int			nextId = 0;
-		int			currentGenerationId = 1;
-		value_t		mutationChance = 0.05;
+		public:
 
-		Network		*(*networkCreationFunction)();
-		void		(*crossOverFunction)(Population *) = &DefaultCrossOverFunction;
+			void		SetNetwork(Network *newNetwork) {network = newNetwork;};
+			Network		*GetNetwork() {return (network);};
 
-	public:
+			void		SetScore(int newScore) {previousScore = score; score = newScore;};
+			int			GetScore() const {return (score);};
+			int			GetPreviousScore() const {return (previousScore);};
 
-		Population(Network *(*f)(), int numberOfPerson);
+			void		SetGenerationId(int newId) {generationId = newId;};
+			int			GetGenerationId() const {return (generationId);};
 
-		std::vector<Person_t *>	&GetPersons() {return (population);};
-		int						GetSize() const {return (population.size());};
-		int						GetCurrentGenerationId() const {return (currentGenerationId);};
+			void		SetId(int newId) {id = newId;};
+			int			GetId() const {return (id);};
 
-		void					SetMutationChance(value_t value) {mutationChance = value;};
-		value_t					GetMutationChance() const {return (mutationChance);};
+			void		SetPopulation(Population *newPopulation) {population = newPopulation;};
+			Population	*GetPopulation() {return (population);};
 
-		void					AddPerson(Person_t *person);
-		Person_t				*GenerateNewPerson();
+			void		Select() {isSelected = true;};
+			void		Unselect() {isSelected = false;};
+			bool		IsSelected() const {return (isSelected);};
 
-		void					SetCrossOverFunction(int functionId);
-		void					SetCrossOverFunction(void (*f)(Population *)) {crossOverFunction = f;};
-		void					CrossOver();
+			void		SetCustomData(void *ptr) {customData = ptr;};
+			void		*GetCustomData() {return (customData);};
+		};
 
-		void					DeleteUnselectedPersons();
-	};
+		class Population {
+
+		private:
+
+			std::vector<Person *>	population;
+
+			int			nextId = 0;
+			int			currentGenerationId = 1;
+			value_t		mutationChance = 0.05;
+
+			Network		*(*networkCreationFunction)();
+			void		(*crossOverFunction)(Population *) = &DefaultCrossOverFunction;
+
+		public:
+
+			Population(Network *(*f)(), int numberOfPerson);
+
+			std::vector<Person *>	&GetPersons() {return (population);};
+			int						GetSize() const {return (population.size());};
+			int						GetCurrentGenerationId() const {return (currentGenerationId);};
+
+			void					SetMutationChance(value_t value) {mutationChance = value;};
+			value_t					GetMutationChance() const {return (mutationChance);};
+
+			void					AddPerson(Person *person);
+			Person					*GenerateNewPerson();
+
+			void					SetCrossOverFunction(int functionId);
+			void					SetCrossOverFunction(void (*f)(Population *)) {crossOverFunction = f;};
+			void					CrossOver();
+
+			void					DeleteUnselectedPersons();
+		};
+	}
 }
 #endif

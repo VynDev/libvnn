@@ -6,38 +6,41 @@
 
 #include "types.h"
 
-namespace vyn::neuralnetwork {
+namespace vyn
+{
+	namespace neuralnetwork
+	{
+		class Connection {
 
-	class Connection {
-
-	private:
+		private:
 
 
-		Neuron								*input = nullptr;
-		Neuron								*output = nullptr;
-		weight_t							weight = 0;
-		value_t								gradient = 0;
+			Neuron								*input = nullptr;
+			Neuron								*output = nullptr;
+			weight_t							weight = 0;
+			value_t								gradient = 0;
 
-		bool								shouldUpdate = false;
+			bool								shouldUpdate = false;
 
-	public:
+		public:
 
-		Connection();
+			Connection();
 
-		void								SetInput(Neuron *neuron) {input = neuron;};
-		void								SetOutput(Neuron *neuron) {output = neuron;};
-		void								SetWeight(weight_t newWeight) {weight = newWeight;};
+			void								SetInput(Neuron *neuron) {input = neuron;};
+			void								SetOutput(Neuron *neuron) {output = neuron;};
+			void								SetWeight(weight_t newWeight) {weight = newWeight;};
 
-		void								SetGradient(value_t newGradient) {gradient = newGradient;};
-		void								SetShouldUpdate(bool a) {shouldUpdate = a;};
+			void								SetGradient(value_t newGradient) {gradient = newGradient;};
+			void								SetShouldUpdate(bool a) {shouldUpdate = a;};
 
-		bool								ShouldUpdate() const {return (shouldUpdate);};
-		//int									GetId() const {return (id);};
-		Neuron								*GetInput() const {return (input);};
-		Neuron								*GetOutput() const {return (output);};
-		weight_t							GetWeight() const {return (weight);};
-		weight_t							GetGradient() const {return (gradient);};
+			bool								ShouldUpdate() const {return (shouldUpdate);};
+			//int									GetId() const {return (id);};
+			Neuron								*GetInput() const {return (input);};
+			Neuron								*GetOutput() const {return (output);};
+			weight_t							GetWeight() const {return (weight);};
+			weight_t							GetGradient() const {return (gradient);};
 
-	};
+		};
+	}
 }
 #endif
