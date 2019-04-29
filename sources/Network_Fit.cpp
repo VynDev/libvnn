@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:22:44
+* @Last Modified time: 2019-04-19 14:22:53
 */
 
 #include "Network.h"
@@ -79,11 +79,17 @@ namespace vyn
 			int						noImprovementEpochLimit = 0;
 			int						k;
 
-			std::cout << "Training, batch size = " << batchSize << ", nbIteration = " << nbIteration << std::endl;
-			*(parameters.trainingCsv) << parameters.trainingSetInputs.size() << std::endl;
-			*(parameters.trainingCsv) << batchSize << std::endl;
-			*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
-			*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
+			//std::cout << "Training, batch size = " << batchSize << ", nbIteration = " << nbIteration << std::endl;
+			if (parameters.trainingCsv)
+			{
+				*(parameters.trainingCsv) << parameters.trainingSetInputs.size() << std::endl;
+				*(parameters.trainingCsv) << batchSize << std::endl;
+			}
+			if (parameters.validationCsv)
+			{
+				*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
+				*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
+			}
 			for (int i = 0; i < nbIteration; ++i)
 			{
 				totalCost = 0;
@@ -99,7 +105,7 @@ namespace vyn
 					DEBUG_CHECK_VALUE(cost, "Cost");
 				}
 				totalCost = totalCost / k;
-				std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
+				//std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
 				if (parameters.validationCsv != nullptr)
 				{
 					validationCost = ValidationSet(this, parameters);
@@ -120,7 +126,7 @@ namespace vyn
 				}
 				
 			}
-			std::cout << "Training finished" << std::endl;
+			//std::cout << "Training finished" << std::endl;
 		}
 	}
 }

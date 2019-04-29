@@ -76,3 +76,7 @@ setup_dymanic:
 
 $(NAME_DYNAMIC): $(OBJS)
 	$(COMPILER) $(FLAGS) -shared $(OBJS) -o $(NAME_DYNAMIC)
+
+test: static
+	$(COMPILER) tests/*.cpp libvnn.a -o test_program
+	./test_program

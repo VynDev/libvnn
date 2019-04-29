@@ -12,15 +12,15 @@ namespace vyn
 	{
 		class Connection {
 
+		/*
+		**	Global neural network
+		*/
 		private:
 
 
 			Neuron								*input = nullptr;
 			Neuron								*output = nullptr;
 			weight_t							weight = 0;
-			value_t								gradient = 0;
-
-			bool								shouldUpdate = false;
 
 		public:
 
@@ -30,16 +30,25 @@ namespace vyn
 			void								SetOutput(Neuron *neuron) {output = neuron;};
 			void								SetWeight(weight_t newWeight) {weight = newWeight;};
 
-			void								SetGradient(value_t newGradient) {gradient = newGradient;};
-			void								SetShouldUpdate(bool a) {shouldUpdate = a;};
 
-			bool								ShouldUpdate() const {return (shouldUpdate);};
-			//int									GetId() const {return (id);};
 			Neuron								*GetInput() const {return (input);};
 			Neuron								*GetOutput() const {return (output);};
 			weight_t							GetWeight() const {return (weight);};
-			weight_t							GetGradient() const {return (gradient);};
+		/*
+		**	Back propagation
+		*/
+		private:
 
+			value_t								gradient = 0;
+			bool								shouldUpdate = false;
+
+		public:
+
+			void								SetGradient(value_t newGradient) {gradient = newGradient;};
+			void								SetShouldUpdate(bool a) {shouldUpdate = a;};
+
+			weight_t							GetGradient() const {return (gradient);};
+			bool								ShouldUpdate() const {return (shouldUpdate);};
 		};
 	}
 }

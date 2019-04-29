@@ -17,6 +17,9 @@ namespace vyn
 
 		class Neuron {
 
+		/*
+		**	Global neural network
+		*/
 		private:
 
 			static int					nbNeuron;
@@ -26,13 +29,12 @@ namespace vyn
 			std::vector<Connection *>	outputs;
 			value_t						rawValue;
 			value_t						value = 1;
-			value_t						derivedError = 0;
 			value_t						(*activationFuntion)(Neuron *, value_t) = nullptr;
 			value_t						(*activationFuntionDerivative)(Neuron *, value_t) = nullptr;
 			int							activationFunctionId = 0;
 			bool						isBias = false;
 
-			Layer						*parentLayer;
+			Layer						*parentLayer = nullptr;
 			friend void					Layer::AddNeuron(int functionId);
 			friend void					Layer::AddBias();
 			void						SetParentLayer(Layer *layer) {parentLayer = layer;};
@@ -51,9 +53,6 @@ namespace vyn
 
 			void						SetActivationFunction(int id);
 			void						SetActivationFunction(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntion = f;};
-			void						SetActivationFunctionDerivative(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntionDerivative = f;};
-
-			void						SetDerivedError(value_t newValue) {derivedError = newValue;};
 
 			bool						IsBias() const {return (isBias);};
 
@@ -65,11 +64,25 @@ namespace vyn
 
 			value_t						GetValue() const {return (value);};
 			value_t						GetRawValue() const {return (rawValue);};
+
+			value_t						(*GetActivationFunction(void))(Neuron *, value_t) {return (activationFuntion);};
+		/*
+		**	Back propagation
+		*/
+		private:
+
+			value_t						derivedError = 0;
+
+		public:
+
+			void						SetDerivedError(value_t newValue) {derivedError = newValue;};
+
 			value_t						GetDerivedValue(Connection *connection); // derived with respect to weight
 			value_t						GetDerivedValue(Neuron *neuron); // derived with respect to neuron
 			value_t						GetDerivedError() const {return (derivedError);};
 
-			value_t						(*GetActivationFunction(void))(Neuron *, value_t) {return (activationFuntion);};
+			void						SetActivationFunctionDerivative(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntionDerivative = f;};
+
 		};
 	}
 }

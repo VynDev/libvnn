@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:23:38
+* @Last Modified time: 2019-04-19 11:45:19
 */
 
 #include <iostream>
@@ -52,8 +52,11 @@ namespace vyn
 			
 			newConnection->SetInput(fromNeuron);
 			newConnection->SetOutput(toNeuron);
-			newConnection->SetWeight(neuron->GetParentLayer()->NewWeightValue());
-			neuron->GetParentLayer()->GetParentNetwork()->AddConnection(newConnection);
+			newConnection->SetWeight(0);
+			if (neuron->GetParentLayer())
+				newConnection->SetWeight(neuron->GetParentLayer()->NewWeightValue());
+			if (neuron->GetParentLayer() && neuron->GetParentLayer()->GetParentNetwork())
+				neuron->GetParentLayer()->GetParentNetwork()->AddConnection(newConnection);
 
 			outputs.push_back(newConnection);
 			toNeuron->AddInputConnection(newConnection);
@@ -159,7 +162,6 @@ namespace vyn
 			}
 			throw std::string("Can't derive neuron with respect to neuron");
 		}
-
 		int	Neuron::nbNeuron = 0;
 	}
 }

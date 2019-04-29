@@ -24,7 +24,7 @@ namespace vyn
 
 			const int										id = nbLayer;
 
-			Network											*parentNetwork;
+			Network											*parentNetwork = nullptr;
 			std::vector<vyn::neuralnetwork::Neuron *>		neurons;
 			Layer											*input = nullptr;
 			Layer											*output = nullptr;
@@ -36,6 +36,7 @@ namespace vyn
 
 		public:
 
+			Layer();
 			Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias = 0);
 
 			void											SetParentNetwork(Network *network) {parentNetwork = network;};

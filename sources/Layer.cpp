@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:21:58
+* @Last Modified time: 2019-04-19 11:57:17
 */
 
 #include <iostream>
@@ -16,6 +16,8 @@ namespace vyn
 {
 	namespace neuralnetwork
 	{
+		Layer::Layer() {}
+		
 		Layer::Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias)
 		{
 			SetWeightInitialization(weightInitializationFunctionId);
@@ -60,7 +62,9 @@ namespace vyn
 				for (std::vector<Neuron *>::size_type j = 0; j < toNeurons.size(); ++j)
 				{
 					if (toNeurons[j]->IsBias() == false)
+					{
 						neurons[i]->ConnectTo(toNeurons[j]);
+					}
 				}
 			}
 			layer->AddInput(this);

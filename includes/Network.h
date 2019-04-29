@@ -30,18 +30,19 @@ namespace vyn
 			std::vector<std::vector<value_t>>		trainingSetOutputs;
 			std::vector<std::vector<value_t>>		validationSetInputs;
 			std::vector<std::vector<value_t>>		validationSetOutputs;
-			std::stringstream 						*trainingCsv;
-			std::stringstream 						*validationCsv;
+			std::stringstream 						*trainingCsv = nullptr;
+			std::stringstream 						*validationCsv = nullptr;
 
 		}											TrainingParameters_t;
 
 		class Network {
 
+		/*
+		**	Global neural network
+		*/
 		private:
 
-			/*
-			**	Global neural network
-			*/
+			
 
 			std::vector<Layer *>		layers;
 			std::vector<Connection *>	connections;
@@ -51,26 +52,10 @@ namespace vyn
 			int							costFunctionId = 0;
 			std::vector<value_t>		lastPredictionValues;
 
-			/*
-			**	Supervised learning
-			*/
-
-			value_t						learningRate = 0.1;
-			value_t						gradientClipping = 0;
-			bool						normalizedGradient = false;
-			bool						earlyStoppingEnabled = false;
-			value_t						errorPropagationLimit = 0;
-
-
-			void						UpdateWeights();
-
 		public:
 
 			Network();
 
-			/*
-			**	Global neural network
-			*/
 
 			Layer						*GetInputLayer() const;
 			Layer						*GetOutputLayer() const;
@@ -87,9 +72,22 @@ namespace vyn
 
 			void						SaveTo(std::string fileName);
 
-			/*
-			**	Supervised learning
-			*/
+		/*
+		**	Back propagation
+		*/
+
+		private:
+
+			value_t						learningRate = 0.1;
+			value_t						gradientClipping = 0;
+			bool						normalizedGradient = false;
+			bool						earlyStoppingEnabled = false;
+			value_t						errorPropagationLimit = 0;
+
+
+			void						UpdateWeights();
+
+		public:
 
 			value_t						GetLearningRate() const {return (learningRate);};
 			void						SetLearningRate(value_t newValue) {learningRate = newValue;};
