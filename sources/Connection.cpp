@@ -2,19 +2,18 @@
 * @Author: Vyn
 * @Date:   2019-02-01 15:33:35
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-03-13 11:40:04
+* @Last Modified time: 2019-04-07 14:21:36
 */
 
 #include "Connection.h"
 
-using namespace vyn::neuralnetwork;
-
-Connection::Connection()
+namespace vyn
 {
-	++nbConnection;
-
-	connections.push_back(this);
+	namespace neuralnetwork
+	{
+		Connection::Connection()
+		{
+			
+		}
+	}
 }
-
-int							Connection::nbConnection = 0;
-std::vector<Connection *>	Connection::connections;

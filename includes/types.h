@@ -3,15 +3,20 @@
 
 #include <vector>
 
-namespace vyn::neuralnetwork {
-	class Neuron;
-	class Connection;
-	class Layer;
-	class Network;
+namespace vyn
+{
+	namespace neuralnetwork
+	{
+		class Neuron;
+		class Connection;
+		class Layer;
+		class Network;
+		class Population;
 
-	typedef double value_t;
-	typedef double weight_t;
-	typedef std::vector<value_t> values_t;
+		typedef double value_t;
+		typedef double weight_t;
+		typedef std::vector<value_t> values_t;
+	}
 }
 
 #endif
