@@ -3,9 +3,9 @@
 
 #include <vector>
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		class Neuron;
 		class Connection;

@@ -2,23 +2,23 @@
 * @Author: Vyn
 * @Date:   2019-03-13 12:53:26
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:21:00
+* @Last Modified time: 2019-05-01 19:21:43
 */
 
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "utils.h"
+#include "Utils.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		Network		*Load(std::string fileName)
 		{
 			Network							*network;
 			Layer							*layer;
-			std::vector<Connection *>	connections;
+			std::vector<Connection *>		connections;
 
 			std::ifstream 					file;
 			std::string						line;
@@ -71,9 +71,6 @@ namespace vyn
 			return (network);
 		}
 
-		namespace scale
-	{
-
 		value_t GetMean(std::vector<std::vector<value_t>> &inputs, int i)
 		{
 			value_t	total;
@@ -123,6 +120,7 @@ namespace vyn
 				ScaleData_t		scaleData;
 				scaleData.min = GetMin(inputs, i);
 				scaleData.max = GetMax(inputs, i);
+				scaleData.mean = GetMean(inputs, i);
 				for (int j = 0; j < inputs.size(); ++j)
 				{
 					inputs[j][i] = (inputs[j][i] - scaleData.min) / (scaleData.max - scaleData.min);
@@ -182,6 +180,49 @@ namespace vyn
 			}
 			return (scaleDatas);
 		}
-	}
+
+		void SaveScaleDatas(std::vector<ScaleData_t> scaleDatas, std::string fileName)
+		{
+			std::ofstream file;
+			file.open(fileName);
+			for (int i = 0; i < scaleDatas.size(); ++i)
+			{
+				file << scaleDatas[i].min << " " << scaleDatas[i].max << " " << scaleDatas[i].mean << std::endl;
+			}
+			file.close();
+		}
+
+		std::vector<ScaleData_t>	LoadScaleDatas(std::string fileName)
+		{
+			std::vector<ScaleData_t>		scaleDatas;
+			int										nbLine = 0;
+
+			std::string	line;
+			std::ifstream file(fileName);
+			while (file.eof() == false)
+			{
+				std::getline(file, line);
+				if (line.length() > 0)
+				{
+					ScaleData_t	scaleData;
+					std::string				element;
+					std::istringstream 		elements(line);
+
+					std::getline(elements, element, ' ');
+					scaleData.min = std::stod(element);
+					std::getline(elements, element, ' ');
+					scaleData.max = std::stod(element);
+					std::getline(elements, element, ' ');
+					scaleData.mean = std::stod(element);
+
+					++nbLine;
+					
+					scaleDatas.push_back(scaleData);
+				}
+			}
+			file.close();
+			return (scaleDatas);
+		}
+	
 	}
 }

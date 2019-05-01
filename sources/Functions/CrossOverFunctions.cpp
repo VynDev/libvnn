@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-05 11:47:29
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:20:30
+* @Last Modified time: 2019-05-01 19:21:39
 */
 
 /*
@@ -19,12 +19,12 @@
 #include "Network.h"
 #include "Neuron.h"
 #include "Population.h"
-#include "types.h"
-#include "utils.h"
+#include "Types.h"
+#include "Utils.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		Person		*GenerateChild(Population *population, Person *person1, Person *person2)
 		{

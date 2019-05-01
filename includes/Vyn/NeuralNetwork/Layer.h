@@ -10,11 +10,11 @@
 #define WEIGHT_INIT_1 1
 
 #include <vector>
-#include "types.h"
+#include "Types.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		class Layer {
 
@@ -25,7 +25,7 @@ namespace vyn
 			const int										id = nbLayer;
 
 			Network											*parentNetwork = nullptr;
-			std::vector<vyn::neuralnetwork::Neuron *>		neurons;
+			std::vector<Neuron *>							neurons;
 			Layer											*input = nullptr;
 			Layer											*output = nullptr;
 			int												type = LAYER_UNCONNECTED;
@@ -53,7 +53,7 @@ namespace vyn
 			void											SetWeightInitialization(int initializationId);
 			value_t											NewWeightValue() {return ((*weightInitializationFunction)(this));};
 
-			std::vector<vyn::neuralnetwork::Neuron *>		GetNeurons() const {return (neurons);};
+			std::vector<Neuron *>							GetNeurons() const {return (neurons);};
 			std::vector<value_t>							GetValues() const;
 			int												GetBiasCount() const {return (nbBias);};
 		};

@@ -25,7 +25,7 @@ ARCHIVER_UE4_FLAGS = rc
 #ARCHIVER_FLAGS = $(ARCHIVER_UE4_FLAGS)
 #----------------------------------------------
 
-INCLUDES =	-I includes
+INCLUDES =	-I includes/Vyn/NeuralNetwork
 
 SOURCES = 	Neuron.cpp \
 			Connection.cpp \
@@ -34,11 +34,11 @@ SOURCES = 	Neuron.cpp \
 			Network_Fit.cpp \
 			Network_Propagate.cpp \
 			Population.cpp \
-			functions/activationFunctions.cpp \
-			functions/costFunctions.cpp \
-			functions/crossOverFunctions.cpp \
-			utils/utils.cpp \
-			debug/debug.cpp 
+			Functions/ActivationFunctions.cpp \
+			Functions/CostFunctions.cpp \
+			Functions/CrossOverFunctions.cpp \
+			Utils/Utils.cpp \
+			Debug/Debug.cpp 
 
 ################ Setup paths
 
@@ -54,7 +54,7 @@ createdir:
 	if [ ! -d "obj" ]; then mkdir obj; fi
 	-mkdir $(OBJDIRS)
 
-obj/%.o: sources/%.cpp includes/*
+obj/%.o: sources/%.cpp includes/Vyn/NeuralNetwork/*
 	$(COMPILER) $(O_FLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
@@ -63,6 +63,7 @@ clean:
 fclean: clean
 	rm -f $(NAME_STATIC)
 	rm -f $(NAME_DYNAMIC)
+	rm -f test_program
 
 static: createdir $(NAME_STATIC)
 

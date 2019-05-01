@@ -7,6 +7,6 @@
 #include "Network.h"
 #include "Population.h"
 
-#include "utils.h"
+#include "Utils.h"
 
 #endif

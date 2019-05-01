@@ -2,16 +2,16 @@
 * @Author: Vyn
 * @Date:   2019-04-02 16:44:28
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:23:55
+* @Last Modified time: 2019-05-01 19:22:15
 */
 
 #include "Population.h"
 #include "Neuron.h"
 #include "Network.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		Population::Population(Network *(*f)() , int numberOfPerson)
 		{

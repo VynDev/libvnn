@@ -2,12 +2,12 @@
 #define POPULATION_H
 
 #include "Network.h"
-#include "crossOverFunctions.h"
-#include "types.h"
+#include "CrossOverFunctions.h"
+#include "Types.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		class Population;
 

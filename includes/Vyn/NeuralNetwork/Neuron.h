@@ -4,12 +4,12 @@
 #include <vector>
 
 #include "Layer.h"
-#include "types.h"
-#include "activationFunctions.h"
+#include "Types.h"
+#include "ActivationFunctions.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		/** 
 		*	Neuron component of the neural network

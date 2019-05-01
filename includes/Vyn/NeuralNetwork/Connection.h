@@ -4,11 +4,11 @@
 #include <vector>
 #include <cstdlib>
 
-#include "types.h"
+#include "Types.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		class Connection {
 

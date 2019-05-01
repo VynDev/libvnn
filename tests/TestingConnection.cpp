@@ -2,21 +2,21 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-18 20:09:02
+* @Last Modified time: 2019-05-01 19:27:01
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/NeuralNetwork.h"
+#include "../includes/Vyn/NeuralNetwork/All.h"
 
 TEST(CONNECTION)
 {
 	CASE("Basic")
 	{
-		vyn::neuralnetwork::Neuron		inputNeuron;
-		vyn::neuralnetwork::Neuron		outputNeuron;
-		vyn::neuralnetwork::Connection	connection;
+		Vyn::NeuralNetwork::Neuron		inputNeuron;
+		Vyn::NeuralNetwork::Neuron		outputNeuron;
+		Vyn::NeuralNetwork::Connection	connection;
 
 		REQUIRE(connection.GetInput() == nullptr);
 		REQUIRE(connection.GetOutput() == nullptr);
@@ -38,7 +38,7 @@ TEST(CONNECTION)
 
 	CASE("Back propagation")
 	{
-		vyn::neuralnetwork::Connection	connection;
+		Vyn::NeuralNetwork::Connection	connection;
 
 		REQUIRE(connection.GetGradient() == 0);
 

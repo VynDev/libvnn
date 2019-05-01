@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-04 14:44:05
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-05 14:19:01
+* @Last Modified time: 2019-05-01 19:21:34
 */
 
 #include <cmath>
@@ -11,11 +11,11 @@
 #include <float.h>
 
 #include "Network.h"
-#include "types.h"
+#include "Types.h"
 #include "Neuron.h"
 #include "Connection.h"
 
-using namespace vyn::neuralnetwork;
+using namespace Vyn::NeuralNetwork;
 
 value_t	SquaredError(std::vector<Neuron *> outputNeurons, std::vector<value_t> expectedOutput)
 {

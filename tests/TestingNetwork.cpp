@@ -2,21 +2,21 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-19 14:34:00
+* @Last Modified time: 2019-05-01 19:26:55
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/NeuralNetwork.h"
+#include "../includes/Vyn/NeuralNetwork/All.h"
 
-using vyn::neuralnetwork::value_t;
+using Vyn::NeuralNetwork::value_t;
 
 TEST(NETWORK)
 {
 	CASE("Training XOR")
 	{
-		vyn::neuralnetwork::Network network;
+		Vyn::NeuralNetwork::Network network;
 
 		network.AddLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 1);
 		network.AddLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 1);
@@ -24,7 +24,7 @@ TEST(NETWORK)
 		network.SetLearningRate(0.1);
 		network.SetCostFunction(COST_FUNCTION_MSE);
 
-		vyn::neuralnetwork::TrainingParameters_t	parameters;
+		Vyn::NeuralNetwork::TrainingParameters_t	parameters;
 
 		std::vector<std::vector<value_t>>			inputs;
 		std::vector<std::vector<value_t>>			outputs;

@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-19 14:22:53
+* @Last Modified time: 2019-05-01 19:22:00
 */
 
 #include "Network.h"
@@ -13,10 +13,10 @@
 #include <iostream>
 #include <cmath>
 
-namespace vyn
+namespace Vyn
 {
 
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		value_t			PredictOne(Network *network, std::vector<value_t> &inputs, std::vector<value_t> &expectedOutputs)
 		{
@@ -105,7 +105,7 @@ namespace vyn
 					DEBUG_CHECK_VALUE(cost, "Cost");
 				}
 				totalCost = totalCost / k;
-				//std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
+				std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
 				if (parameters.validationCsv != nullptr)
 				{
 					validationCost = ValidationSet(this, parameters);

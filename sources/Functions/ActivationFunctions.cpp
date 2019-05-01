@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-03 14:49:12
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 14:20:08
+* @Last Modified time: 2019-05-01 19:21:28
 */
 
 #include <cmath>
@@ -12,12 +12,12 @@
 #include "Network.h"
 #include "Neuron.h"
 #include "Population.h"
-#include "types.h"
-#include "utils.h"
+#include "Types.h"
+#include "Utils.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		value_t		Sigmoid(Neuron *neuron, value_t x)
 		{

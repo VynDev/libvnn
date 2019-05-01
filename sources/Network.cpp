@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-07 15:26:48
+* @Last Modified time: 2019-05-01 19:21:56
 */
 
 #include <iostream>
@@ -18,9 +18,9 @@
 
 #define ABS(x) (x < 0 ? -x : x)
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		Network::Network()
 		{

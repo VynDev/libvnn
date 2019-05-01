@@ -3,11 +3,11 @@
 
 #define CROSSOVER_FUNCTION_DEFAULT 0
 
-#include "types.h"
+#include "Types.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		void		DefaultCrossOverFunction(Population *population);
 	}

@@ -6,9 +6,9 @@
 #include <sstream>
 #include <float.h>
 
-#include "types.h"
-#include "utils.h"
-#include "costFunctions.h"
+#include "Types.h"
+#include "Utils.h"
+#include "CostFunctions.h"
 
 #define VYN_NEURALNETWORK_STRING "VYN_NEURALNETWORK"
 #define VYN_NEURALNETWORK_VERSION "0.0.0"
@@ -20,9 +20,9 @@
 	#define DEBUG_CHECK_VALUE(x, msg)
 #endif
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		typedef struct								TrainingParameters_s
 		{

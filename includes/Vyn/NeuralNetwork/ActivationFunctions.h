@@ -6,11 +6,11 @@
 #define NEURON_FUNCTION_SIGMOID 2
 #define NEURON_FUNCTION_SOFTMAX 3
 
-#include "types.h"
+#include "Types.h"
 
-namespace vyn
+namespace Vyn
 {
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 		value_t		Sigmoid(Neuron *, value_t x);
 		value_t		SigmoidDerivative(Neuron *, value_t x);

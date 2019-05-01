@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-04-19 11:45:19
+* @Last Modified time: 2019-05-01 19:22:09
 */
 
 #include <iostream>
@@ -12,10 +12,10 @@
 #include "Neuron.h"
 #include "Connection.h"
 
-namespace vyn
+namespace Vyn
 {
 
-	namespace neuralnetwork
+	namespace NeuralNetwork
 	{
 
 		/** Base constructor, shouldn't be used unless you know what you are doing */
