@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-13 12:53:26
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-09 15:37:47
+* @Last Modified time: 2019-05-10 15:23:45
 */
 
 #include <iostream>
@@ -109,15 +109,15 @@ namespace Vyn
 			return (max);
 		}
 
-		std::vector<ScaleData_t> MinMax(std::vector<Values> &inputs)
+		std::vector<ScaleData> MinMax(std::vector<Values> &inputs)
 		{
-			std::vector<ScaleData_t>	scaleDatas;
+			std::vector<ScaleData>	scaleDatas;
 			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)
 			{
-				ScaleData_t		scaleData;
+				ScaleData		scaleData;
 				scaleData.min = GetMin(inputs, i);
 				scaleData.max = GetMax(inputs, i);
 				scaleData.mean = GetMean(inputs, i);
@@ -130,7 +130,7 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MinMax(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas)
+		std::vector<ScaleData> MinMax(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas)
 		{
 			Values		firstLine;
 
@@ -145,15 +145,15 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MeanNormalisation(std::vector<Values> &inputs)
+		std::vector<ScaleData> MeanNormalisation(std::vector<Values> &inputs)
 		{
-			std::vector<ScaleData_t>	scaleDatas;
+			std::vector<ScaleData>	scaleDatas;
 			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)
 			{
-				ScaleData_t		scaleData;
+				ScaleData		scaleData;
 				scaleData.mean = GetMean(inputs, i);
 				scaleData.min = GetMin(inputs, i);
 				scaleData.max = GetMax(inputs, i);
@@ -166,7 +166,7 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas)
+		std::vector<ScaleData> MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas)
 		{
 			Values		firstLine;
 
@@ -181,7 +181,7 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		void SaveScaleDatas(std::vector<ScaleData_t> scaleDatas, std::string fileName)
+		void SaveScaleDatas(std::vector<ScaleData> scaleDatas, std::string fileName)
 		{
 			std::ofstream file;
 			file.open(fileName);
@@ -192,9 +192,9 @@ namespace Vyn
 			file.close();
 		}
 
-		std::vector<ScaleData_t>	LoadScaleDatas(std::string fileName)
+		std::vector<ScaleData>	LoadScaleDatas(std::string fileName)
 		{
-			std::vector<ScaleData_t>		scaleDatas;
+			std::vector<ScaleData>		scaleDatas;
 			int										nbLine = 0;
 
 			std::string	line;
@@ -204,7 +204,7 @@ namespace Vyn
 				std::getline(file, line);
 				if (line.length() > 0)
 				{
-					ScaleData_t	scaleData;
+					ScaleData	scaleData;
 					std::string				element;
 					std::istringstream 		elements(line);
 

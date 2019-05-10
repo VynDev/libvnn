@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 14:07:55
+* @Last Modified time: 2019-05-10 14:44:14
 */
 
 #include <iostream>
@@ -87,14 +87,14 @@ namespace Vyn
 		Value					Network::GetCost(Values const &expectedOutput)
 		{
 			if (costFunction != nullptr)
-				return ((*costFunction)(GetOutputLayer()->GetNeurons(), expectedOutput));
+				return ((*costFunction)(this->lastOutputValues, expectedOutput));
 			throw std::string("No cost function defined");
 		}
 
-		Value					Network::GetDerivedCost(Values const &expectedOutput, Neuron *outputNeuron)
+		Value					Network::GetDerivedCost(Values const &expectedOutput, int neuronIndex)
 		{
 			if (costFunctionDerivative != nullptr)
-				return ((*costFunctionDerivative)(GetOutputLayer()->GetNeurons(), expectedOutput, outputNeuron));
+				return ((*costFunctionDerivative)(this->lastOutputValues, expectedOutput, neuronIndex));
 			throw std::string("No cost function derivative defined");
 		}
 

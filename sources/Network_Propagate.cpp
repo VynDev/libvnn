@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-24 10:06:27
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 12:41:06
+* @Last Modified time: 2019-05-10 14:56:52
 */
 
 #include <iostream>
@@ -56,7 +56,6 @@ namespace Vyn
 				DEBUG_CHECK_VALUE(neuron->GetDerivedError(), "Current derived error");
 				DEBUG_CHECK_VALUE(neuron->GetDerivedValue(connections[i]), "Derived value w.r.t connection");
 				gradient = neuron->GetDerivedError() * neuron->GetDerivedValue(connections[i]);
-				//std::cout << neuron->GetDerivedError() << " * " << neuron->GetDerivedValue(connections[i]) << " " << neuron->GetActivationFunctionId() << std::endl;
 				DEBUG_CHECK_VALUE(gradient, "gradient of weight");
 
 				connections[i]->SetGradient(gradient);
@@ -94,7 +93,7 @@ namespace Vyn
 			derivedCost.reserve(outputLayerNeurons.size());
 			for (Neurons::size_type i = 0; i < outputLayerNeurons.size(); ++i)
 			{
-				derivedCost.push_back(this->GetDerivedCost(goodValues, outputLayerNeurons[i]));
+				derivedCost.push_back(this->GetDerivedCost(goodValues, i));
 			}
 			this->Propagate(goodValues, derivedCost);
 		}

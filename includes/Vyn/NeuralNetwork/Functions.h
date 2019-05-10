@@ -30,11 +30,11 @@ namespace Vyn
 		void DefaultCrossOverFunction(Population *population);
 
 		
-		Value SquaredError(const Neurons &outputNeurons, const Values &expectedOutput);
-		Value SquaredErrorDerivative(const Neurons &outputNeurons, const Values &expectedOutput, Neuron *outputNeuron);
+		Value SquaredError(const Values &outputs, const Values &expectedOutputs);
+		Value SquaredErrorDerivative(const Values &outputs, const Values &expectedOutputs, int neuronIndex);
 
-		Value CrossEntropy(const Neurons &outputNeurons, const Values &expectedOutput);
-		Value CrossEntropyDerivative(const Neurons &outputNeurons, const Values &expectedOutput, Neuron *outputNeuron);
+		Value CrossEntropy(const Values &outputs, const Values &expectedOutputs);
+		Value CrossEntropyDerivative(const Values &outputs, const Values &expectedOutputs, int neuronIndex);
 
 		void DefaultCrossOverFunction(Population *population);
 

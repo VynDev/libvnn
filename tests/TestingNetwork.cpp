@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-09 15:37:47
+* @Last Modified time: 2019-05-10 15:23:45
 */
 
 #include <iostream>
@@ -24,7 +24,7 @@ TEST(NETWORK)
 		network.SetLearningRate(0.1);
 		network.SetCostFunction(COST_FUNCTION_MSE);
 
-		Vyn::NeuralNetwork::TrainingParameters_t	parameters;
+		Vyn::NeuralNetwork::TrainingParameters	parameters;
 
 		std::vector<std::vector<Value>>			inputs;
 		std::vector<std::vector<Value>>			outputs;

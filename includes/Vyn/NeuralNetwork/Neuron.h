@@ -59,8 +59,8 @@ namespace Vyn
 			bool						IsBias() const {return (isBias);};
 
 			int							GetActivationFunctionId() const {return (activationFunctionId);};
-			const Connections &GetInputConnections() const {return (inputs);};
-			const Connections &GetOutputConnections() const {return (outputs);};
+			const Connections 			&GetInputConnections() const {return (inputs);};
+			const Connections 			&GetOutputConnections() const {return (outputs);};
 			int							GetId() const {return (id);};
 			Layer						*GetParentLayer() const {return (parentLayer);};
 

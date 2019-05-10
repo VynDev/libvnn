@@ -22,14 +22,14 @@ namespace Vyn
 			Value		min;
 			Value		max;
 			Value		mean;
-		} 							ScaleData_t;
-		std::vector<ScaleData_t>	MinMax(std::vector<Values> &inputs);
-		std::vector<ScaleData_t>	MinMax(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas);
-		std::vector<ScaleData_t>	MeanNormalisation(std::vector<Values> &inputs);
-		std::vector<ScaleData_t>	MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas);
+		} 							ScaleData;
+		std::vector<ScaleData>	MinMax(std::vector<Values> &inputs);
+		std::vector<ScaleData>	MinMax(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
+		std::vector<ScaleData>	MeanNormalisation(std::vector<Values> &inputs);
+		std::vector<ScaleData>	MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
 
-		void SaveScaleDatas(std::vector<ScaleData_t> scaleDatas, std::string fileName);
-		std::vector<ScaleData_t>	LoadScaleDatas(std::string fileName);
+		void SaveScaleDatas(std::vector<ScaleData> scaleDatas, std::string fileName);
+		std::vector<ScaleData>	LoadScaleDatas(std::string fileName);
 
 		namespace debug
 		{

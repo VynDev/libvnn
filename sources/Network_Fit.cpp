@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 14:09:31
+* @Last Modified time: 2019-05-10 15:23:45
 */
 
 #include "Network.h"
@@ -27,15 +27,15 @@ namespace Vyn
 		Value			Network::TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i)
 		{
 			Value	totalCost;
-			Values	derivedCosts;
 
 			totalCost = 0;
 			const Neurons &outputLayerNeurons = network->GetOutputLayer()->GetNeurons();
-			derivedCosts.reserve(outputLayerNeurons.size());
+			tmpDerivedCost.clear();
+			tmpDerivedCost.reserve(outputLayerNeurons.size());
 
 			for (Neurons::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 			{
-				derivedCosts.push_back(0);
+				tmpDerivedCost.push_back(0);
 			}
 			if (inputs.size() - i < batchSize)
 				batchSize = inputs.size() - i;
@@ -44,20 +44,20 @@ namespace Vyn
 				totalCost += PredictOne(network, inputs[i + j], expectedOutputs[i + j]);
 				for (Neurons::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 				{
-					derivedCosts[k] = derivedCosts[k] + network->GetDerivedCost(expectedOutputs[i + j], outputLayerNeurons[k]);
+					tmpDerivedCost[k] = tmpDerivedCost[k] + network->GetDerivedCost(expectedOutputs[i + j], k);
 				}
 			}
 			totalCost = totalCost / batchSize;
 			for (Values::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 			{
-				derivedCosts[k] = derivedCosts[k] / batchSize;
+				tmpDerivedCost[k] = tmpDerivedCost[k] / batchSize;
 			}
 			if (totalCost > errorPropagationLimit)
-				network->Propagate(expectedOutputs[i], derivedCosts);
+				network->Propagate(expectedOutputs[i], tmpDerivedCost);
 			return (totalCost);
 		}
 
-		Value					ValidationSet(Network *network, TrainingParameters_t &parameters)
+		Value					ValidationSet(Network *network, const TrainingParameters &parameters)
 		{
 			Value	totalCost;
 
@@ -70,7 +70,7 @@ namespace Vyn
 			return (totalCost);
 		}
 
-		void					Network::Fit(TrainingParameters_t parameters, int batchSize, int nbIteration)
+		void					Network::Fit(TrainingParameters parameters, int batchSize, int nbIteration)
 		{
 			Value					totalCost;
 			Value					validationCost = -1;

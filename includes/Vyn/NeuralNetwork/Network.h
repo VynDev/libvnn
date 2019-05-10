@@ -33,7 +33,7 @@ namespace Vyn
 			std::stringstream 		*trainingCsv = nullptr;
 			std::stringstream 		*validationCsv = nullptr;
 
-		}							TrainingParameters_t;
+		}							TrainingParameters;
 
 		class Network {
 
@@ -47,10 +47,11 @@ namespace Vyn
 			Layers		layers;
 			Connections	connections;
 
-			Value		(*costFunction)(const Neurons &, const Values &) = nullptr;
-			Value		(*costFunctionDerivative)(const Neurons &, const Values &, Neuron *) = nullptr;
+			Value		(*costFunction)(const Values &, const Values &) = nullptr;
+			Value		(*costFunctionDerivative)(const Values &, const Values &, int) = nullptr;
 			int			costFunctionId = 0;
 			Values		lastOutputValues;
+			Values		tmpDerivedCost;
 
 		public:
 
@@ -92,18 +93,18 @@ namespace Vyn
 			void						SetLearningRate(Value newValue) {learningRate = newValue;};
 
 			Value						GetCost(Values const &expectedOutput);
-			Value						GetDerivedCost(Values const &expectedOutput, Neuron *outputNeuron);
+			Value						GetDerivedCost(Values const &expectedOutput, int neuronIndex);
 			int							GetCostFunctionId() const {return (costFunctionId);};
 
 			void						SetCostFunction(int functionId);
-			void						SetCostFunction(Value (*f)(const Neurons &, const Values &)) {costFunctionId = 0; costFunction = f;};
-			void						SetCostFunctionDerivative(Value (*f)(const Neurons &, const Values &, Neuron *)) {costFunctionId = 0; costFunctionDerivative = f;};
+			void						SetCostFunction(Value (*f)(const Values &, const Values &)) {costFunctionId = 0; costFunction = f;};
+			void						SetCostFunctionDerivative(Value (*f)(const Values &, const Values &, int)) {costFunctionId = 0; costFunctionDerivative = f;};
 
 			void						SetGradientClipping(Value newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
 			void						EnableEarlyStopping(bool newValue) {earlyStoppingEnabled = newValue;};
 			void						SetErrorPropagationLimit(Value newValue) {errorPropagationLimit = newValue;};
 
-			void						Fit(TrainingParameters_t parameters, int batchSize, int nbIteration);
+			void						Fit(TrainingParameters parameters, int batchSize, int nbIteration);
 			Value						TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i);
 			void						Propagate(Values const &goodValues);
 			void						Propagate(Values const &goodValues, Values const &derivedCost);
