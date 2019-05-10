@@ -7,15 +7,19 @@ namespace Vyn
 {
 	namespace NeuralNetwork
 	{
-		class Neuron;
+		typedef double Value;
+		typedef double Weight;
+
 		class Connection;
+		class Neuron;
 		class Layer;
 		class Network;
 		class Population;
 
-		typedef double value_t;
-		typedef double weight_t;
-		typedef std::vector<value_t> values_t;
+		typedef std::vector<Value> Values;
+		typedef std::vector<Connection *> Connections;
+		typedef std::vector<Neuron *> Neurons;
+		typedef std::vector<Layer *> Layers;
 	}
 }
 

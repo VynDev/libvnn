@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:26:58
+* @Last Modified time: 2019-05-09 15:36:16
 */
 
 #include <iostream>
@@ -129,7 +129,7 @@ TEST(LAYER)
 			REQUIRE(outputNeurons[i]->GetRawValue() == 0.5 * 0.5 + 0.5 * 0.5 + 0.5 * 0.5);
 			REQUIRE(outputNeurons[i]->GetValue() == Vyn::NeuralNetwork::Sigmoid(outputNeurons[i], outputNeurons[i]->GetRawValue()));
 		}
-		Vyn::NeuralNetwork::values_t	outputValues = outputLayer.GetValues();
+		Vyn::NeuralNetwork::Values	outputValues = outputLayer.GetValues();
 		for (int i = 0; i < outputNeurons.size(); ++i)
 		{
 			REQUIRE(outputValues[i] == (1 / (1 + exp(-(0.5 * 0.5 + 0.5 * 0.5 + 0.5 * 0.5))))); // <- Sigmoid

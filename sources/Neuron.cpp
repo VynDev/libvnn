@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:22:09
+* @Last Modified time: 2019-05-10 13:36:44
 */
 
 #include <iostream>
@@ -79,22 +79,13 @@ namespace Vyn
 		*/
 		void	Neuron::ComputeValue()
 		{
-			value_t	newValue;
 
-			newValue = 0;
-			for (std::vector<Connection *>::size_type i = 0; i != inputs.size(); ++i)
+			this->rawValue = 0;
+			for (Connections::size_type i = 0; i != inputs.size(); ++i)
 			{
-				value_t		inputNeuronValue;
-				weight_t	weight;
-
-				inputNeuronValue = inputs[i]->GetInput()->GetValue();
-				weight = inputs[i]->GetWeight();
-				DEBUG_CHECK_VALUE(inputNeuronValue, "ComputeValue: input neuron value");
-				DEBUG_CHECK_VALUE(weight, "ComputeValue: weight value");
-				newValue += inputNeuronValue * weight;
+				this->rawValue += inputs[i]->GetInput()->GetValue() * inputs[i]->GetWeight();
 			}
-			this->rawValue = newValue;
-			this->value = newValue;
+			this->derivedRawValue = 0;
 		}
 
 		/**
@@ -141,9 +132,11 @@ namespace Vyn
 		*
 		*	@param connection	The connection to derive w.r.t
 		*/
-		value_t		Neuron::GetDerivedValue(Connection *connection)
+		Value		Neuron::GetDerivedValue(Connection *connection)
 		{
-			return ((*activationFuntionDerivative)(this, GetRawValue()) * connection->GetInput()->GetValue());
+			if (derivedRawValue == 0)
+				derivedRawValue = (*activationFuntionDerivative)(this, GetRawValue());
+			return (derivedRawValue * connection->GetInput()->GetValue());
 		}
 
 		/**
@@ -151,14 +144,18 @@ namespace Vyn
 		*
 		*	@param neuron	The neuron to derive w.r.t
 		*/
-		value_t		Neuron::GetDerivedValue(Neuron *neuron)
+		Value		Neuron::GetDerivedValue(Neuron *neuron)
 		{
 			if (neuron->IsBias())
 				throw std::string("Trying to derive with respect to bias neuron");
-			for (std::vector<Connection *>::size_type i = 0; i < inputs.size(); ++i)
+			for (Connections::size_type i = 0; i < inputs.size(); ++i)
 			{
 				if (inputs[i]->GetInput() == neuron)
-					return ((*activationFuntionDerivative)(this, GetRawValue()) * inputs[i]->GetWeight());
+				{
+					if (derivedRawValue == 0)
+						derivedRawValue = (*activationFuntionDerivative)(this, GetRawValue());
+					return (derivedRawValue * inputs[i]->GetWeight());
+				}
 			}
 			throw std::string("Can't derive neuron with respect to neuron");
 		}

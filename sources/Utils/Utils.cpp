@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-13 12:53:26
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:21:43
+* @Last Modified time: 2019-05-09 15:37:47
 */
 
 #include <iostream>
@@ -18,7 +18,7 @@ namespace Vyn
 		{
 			Network							*network;
 			Layer							*layer;
-			std::vector<Connection *>		connections;
+			Connections		connections;
 
 			std::ifstream 					file;
 			std::string						line;
@@ -71,9 +71,9 @@ namespace Vyn
 			return (network);
 		}
 
-		value_t GetMean(std::vector<std::vector<value_t>> &inputs, int i)
+		Value GetMean(std::vector<Values> &inputs, int i)
 		{
-			value_t	total;
+			Value	total;
 
 			total = 0;
 			for (int j = 0; j < inputs.size(); ++j)
@@ -83,9 +83,9 @@ namespace Vyn
 			return (total / inputs.size());
 		}
 
-		value_t GetMin(std::vector<std::vector<value_t>> &inputs, int i)
+		Value GetMin(std::vector<Values> &inputs, int i)
 		{
-			value_t	min;
+			Value	min;
 
 			min = inputs[0][i];
 			for (int j = 0; j < inputs.size(); ++j)
@@ -96,9 +96,9 @@ namespace Vyn
 			return (min);
 		}
 
-		value_t	GetMax(std::vector<std::vector<value_t>> &inputs, int i)
+		Value	GetMax(std::vector<Values> &inputs, int i)
 		{
-			value_t	max;
+			Value	max;
 
 			max = inputs[0][i];
 			for (int j = 0; j < inputs.size(); ++j)
@@ -109,10 +109,10 @@ namespace Vyn
 			return (max);
 		}
 
-		std::vector<ScaleData_t> MinMax(std::vector<std::vector<value_t>> &inputs)
+		std::vector<ScaleData_t> MinMax(std::vector<Values> &inputs)
 		{
 			std::vector<ScaleData_t>	scaleDatas;
-			std::vector<value_t>		firstLine;
+			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)
@@ -130,9 +130,9 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MinMax(std::vector<std::vector<value_t>> &inputs, std::vector<ScaleData_t> &scaleDatas)
+		std::vector<ScaleData_t> MinMax(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas)
 		{
-			std::vector<value_t>		firstLine;
+			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)
@@ -145,10 +145,10 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MeanNormalisation(std::vector<std::vector<value_t>> &inputs)
+		std::vector<ScaleData_t> MeanNormalisation(std::vector<Values> &inputs)
 		{
 			std::vector<ScaleData_t>	scaleDatas;
-			std::vector<value_t>		firstLine;
+			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)
@@ -166,9 +166,9 @@ namespace Vyn
 			return (scaleDatas);
 		}
 
-		std::vector<ScaleData_t> MeanNormalisation(std::vector<std::vector<value_t>> &inputs, std::vector<ScaleData_t> &scaleDatas)
+		std::vector<ScaleData_t> MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData_t> &scaleDatas)
 		{
-			std::vector<value_t>		firstLine;
+			Values		firstLine;
 
 			firstLine = inputs[0];
 			for (int i = 0; i < firstLine.size(); ++i)

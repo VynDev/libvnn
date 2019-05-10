@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-24 10:06:27
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:22:04
+* @Last Modified time: 2019-05-10 12:41:06
 */
 
 #include <iostream>
@@ -26,12 +26,11 @@ namespace Vyn
 
 		void					Network::CalcNeuron(Neuron *neuron)
 		{
-			std::vector<Connection *>	connections;
-			value_t 					currentDerivedValue;
+			Value 					currentDerivedValue;
 
 			currentDerivedValue = 0;
-			connections = neuron->GetOutputConnections();
-			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+			const Connections &connections = neuron->GetOutputConnections();
+			for (Connections::size_type i = 0; i < connections.size(); ++i)
 			{
 				DEBUG_CHECK_VALUE(connections[i]->GetOutput()->GetDerivedError(), "Current derived value at output neuron");
 				DEBUG_CHECK_VALUE(connections[i]->GetOutput()->GetDerivedValue(neuron), "Derived value w.r.t neuron (self)");
@@ -48,12 +47,11 @@ namespace Vyn
 
 		void					Network::UpdateNeuronWeights(Neuron *neuron)
 		{
-			std::vector<Connection *>	connections;
-			
-			connections = neuron->GetInputConnections();
-			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+			const Connections &connections = neuron->GetInputConnections();
+
+			for (Connections::size_type i = 0; i < connections.size(); ++i)
 			{
-				weight_t	gradient;
+				Weight	gradient;
 
 				DEBUG_CHECK_VALUE(neuron->GetDerivedError(), "Current derived error");
 				DEBUG_CHECK_VALUE(neuron->GetDerivedValue(connections[i]), "Derived value w.r.t connection");
@@ -66,23 +64,20 @@ namespace Vyn
 			}
 		}
 
-		void					Network::Propagate(values_t goodValues, values_t derivedCost)
+		void					Network::Propagate(Values const &goodValues, Values const &derivedCost)
 		{
-			std::vector<Neuron *>		outputLayerNeurons;
-			std::vector<Neuron *>		neurons;
-
-			outputLayerNeurons = this->GetOutputLayer()->GetNeurons();
-			for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
+			const Neurons &outputLayerNeurons = GetOutputLayer()->GetNeurons();
+			for (Neurons::size_type i = 0; i < outputLayerNeurons.size(); ++i)
 			{
 				DEBUG_CHECK_VALUE(derivedCost[i], "Derived cost");
 				outputLayerNeurons[i]->SetDerivedError(derivedCost[i]);
 				UpdateNeuronWeights(outputLayerNeurons[i]);
 			}
 			
-			for (std::vector<Layer *>::size_type i = 0; i < layers.size() - 1; ++i)
+			for (Layers::size_type i = 0; i < layers.size() - 1; ++i)
 			{
-				neurons = layers[(layers.size() - 2) - i]->GetNeurons();
-				for (std::vector<Neuron *>::size_type j = 0; j < neurons.size(); ++j)
+				const Neurons &neurons = layers[(layers.size() - 2) - i]->GetNeurons();
+				for (Neurons::size_type j = 0; j < neurons.size(); ++j)
 				{
 					if (!neurons[j]->IsBias())
 						CalcNeuron(neurons[j]);
@@ -91,13 +86,13 @@ namespace Vyn
 			this->UpdateWeights();
 		}
 
-		void					Network::Propagate(values_t goodValues)
+		void					Network::Propagate(Values const &goodValues)
 		{
-			std::vector<Neuron *>		outputLayerNeurons;
-			values_t					derivedCost;
+			const Neurons &outputLayerNeurons = GetOutputLayer()->GetNeurons();
+			Values derivedCost;
 
-			outputLayerNeurons = this->GetOutputLayer()->GetNeurons();
-			for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
+			derivedCost.reserve(outputLayerNeurons.size());
+			for (Neurons::size_type i = 0; i < outputLayerNeurons.size(); ++i)
 			{
 				derivedCost.push_back(this->GetDerivedCost(goodValues, outputLayerNeurons[i]));
 			}
@@ -106,42 +101,13 @@ namespace Vyn
 
 		void					Network::UpdateWeights()
 		{
-			value_t							maxGradient;
-			bool							maxGradientFound = false;
-
-			if (normalizedGradient)
-			{
-				for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
-				{
-					if (connections[i]->ShouldUpdate())
-					{
-						value_t gradient;
-
-						gradient = connections[i]->GetGradient();
-						if (maxGradientFound == false || ABS(gradient) > maxGradient)
-						{
-							maxGradient = ABS(gradient);
-							maxGradientFound = true;
-						}
-					}
-				}
-				if (maxGradient < 1)
-					maxGradient = 1;
-			}
-			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+			for (Connections::size_type i = 0; i < connections.size(); ++i)
 			{
 				if (connections[i]->ShouldUpdate())
 				{
-					value_t gradient;
+					Value gradient;
 
-					gradient = connections[i]->GetGradient();
-					if (normalizedGradient)
-					{
-						gradient = gradient / maxGradient;
-						//std::cout << maxGradient << std::endl;
-						DEBUG_CHECK_VALUE(gradient, "gradient value after normalization");
-					}
-					gradient = learningRate * gradient;
+					gradient = learningRate * connections[i]->GetGradient();
 					DEBUG_CHECK_VALUE(gradient, "gradient value after learning rate");
 					if (gradientClipping != 0)
 					{

@@ -20,7 +20,7 @@ namespace Vyn
 
 			Neuron								*input = nullptr;
 			Neuron								*output = nullptr;
-			weight_t							weight = 0;
+			Weight							weight = 0;
 
 		public:
 
@@ -28,26 +28,26 @@ namespace Vyn
 
 			void								SetInput(Neuron *neuron) {input = neuron;};
 			void								SetOutput(Neuron *neuron) {output = neuron;};
-			void								SetWeight(weight_t newWeight) {weight = newWeight;};
+			void								SetWeight(Weight newWeight) {weight = newWeight;};
 
 
 			Neuron								*GetInput() const {return (input);};
 			Neuron								*GetOutput() const {return (output);};
-			weight_t							GetWeight() const {return (weight);};
+			Weight								GetWeight() const {return (weight);};
 		/*
 		**	Back propagation
 		*/
 		private:
 
-			value_t								gradient = 0;
+			Value								gradient = 0;
 			bool								shouldUpdate = false;
 
 		public:
 
-			void								SetGradient(value_t newGradient) {gradient = newGradient;};
+			void								SetGradient(Value newGradient) {gradient = newGradient;};
 			void								SetShouldUpdate(bool a) {shouldUpdate = a;};
 
-			weight_t							GetGradient() const {return (gradient);};
+			Weight								GetGradient() const {return (gradient);};
 			bool								ShouldUpdate() const {return (shouldUpdate);};
 		};
 	}

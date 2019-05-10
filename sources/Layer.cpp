@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:21:52
+* @Last Modified time: 2019-05-10 12:34:51
 */
 
 #include <iostream>
@@ -55,11 +55,11 @@ namespace Vyn
 
 		void					Layer::ConnectTo(Layer *layer)
 		{
-			std::vector<Neuron *> toNeurons;
+			Neurons toNeurons;
 			toNeurons = layer->GetNeurons();
-			for (std::vector<Neuron *>::size_type i = 0; i < neurons.size(); ++i)
+			for (Neurons::size_type i = 0; i < neurons.size(); ++i)
 			{
-				for (std::vector<Neuron *>::size_type j = 0; j < toNeurons.size(); ++j)
+				for (Neurons::size_type j = 0; j < toNeurons.size(); ++j)
 				{
 					if (toNeurons[j]->IsBias() == false)
 					{
@@ -80,12 +80,12 @@ namespace Vyn
 		{
 			if (twoStepActivationEnabled)
 			{
-				for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+				for (Neurons::size_type i = 0; i != neurons.size(); ++i)
 				{
 					if (!neurons[i]->IsBias())
 						neurons[i]->ComputeValue();
 				}
-				for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+				for (Neurons::size_type i = 0; i != neurons.size(); ++i)
 				{
 					if (!neurons[i]->IsBias())
 						neurons[i]->ActivateFunction();
@@ -93,7 +93,7 @@ namespace Vyn
 			}
 			else
 			{
-				for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+				for (Neurons::size_type i = 0; i != neurons.size(); ++i)
 				{
 					if (!neurons[i]->IsBias())
 					{
@@ -104,14 +104,16 @@ namespace Vyn
 			}
 		}
 
-		std::vector<value_t>	Layer::GetValues() const
+		Values	Layer::GetValues() const
 		{
-			std::vector<value_t> values;
-			for (std::vector<Neuron *>::size_type i = 0; i != neurons.size(); ++i)
+			Values values;
+
+			values.reserve(neurons.size());
+			for (Neurons::size_type i = 0; i != neurons.size(); ++i)
 			{
 				values.push_back(neurons[i]->GetValue());
 			}
-			return values;
+			return (values);
 		}
 
 		void					Layer::Describe(bool showNeuronsValue)
@@ -121,10 +123,10 @@ namespace Vyn
 			std::cout << "Number of neurons: " << this->neurons.size() << std::endl;
 			if (showNeuronsValue)
 			{
-				std::vector<value_t> values;
+				Values values;
 
 				values = this->GetValues();
-				for (std::vector<value_t>::size_type i = 0; i != values.size(); ++i)
+				for (Values::size_type i = 0; i != values.size(); ++i)
 				{
 					std::cout << values[i] << std::endl;
 				}
@@ -139,8 +141,6 @@ namespace Vyn
 			if (initializationId == WEIGHT_INIT_1)
 				weightInitializationFunction = &weightInitialization1;
 		}
-
 		int	Layer::nbLayer = 0;
 	}
-
 }

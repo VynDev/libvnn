@@ -5,7 +5,7 @@
 
 #include "Layer.h"
 #include "Types.h"
-#include "ActivationFunctions.h"
+#include "Functions.h"
 
 namespace Vyn
 {
@@ -25,12 +25,12 @@ namespace Vyn
 			static int					nbNeuron;
 
 			const int					id = nbNeuron;
-			std::vector<Connection *>	inputs;
-			std::vector<Connection *>	outputs;
-			value_t						rawValue;
-			value_t						value = 1;
-			value_t						(*activationFuntion)(Neuron *, value_t) = nullptr;
-			value_t						(*activationFuntionDerivative)(Neuron *, value_t) = nullptr;
+			Connections	inputs;
+			Connections	outputs;
+			Value						rawValue;
+			Value						value = 1;
+			Value						(*activationFuntion)(Neuron *, Value) = nullptr;
+			Value						(*activationFuntionDerivative)(Neuron *, Value) = nullptr;
 			int							activationFunctionId = 0;
 			bool						isBias = false;
 
@@ -38,6 +38,8 @@ namespace Vyn
 			friend void					Layer::AddNeuron(int functionId);
 			friend void					Layer::AddBias();
 			void						SetParentLayer(Layer *layer) {parentLayer = layer;};
+
+			Value						derivedRawValue = 0;
 
 		public:
 
@@ -48,40 +50,40 @@ namespace Vyn
 			void						AddInputConnection(Connection *newConnection);
 			void						ComputeValue();
 			void						ActivateFunction();
-			void						SetValue(value_t newValue) {value = newValue;};
+			void						SetValue(Value newValue) {value = newValue;};
 			void						SetBias(bool newValue) {isBias = newValue;};
 
 			void						SetActivationFunction(int id);
-			void						SetActivationFunction(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntion = f;};
+			void						SetActivationFunction(Value (*f)(Neuron *, Value)) {activationFunctionId = 0; activationFuntion = f;};
 
 			bool						IsBias() const {return (isBias);};
 
 			int							GetActivationFunctionId() const {return (activationFunctionId);};
-			std::vector<Connection *>	GetInputConnections() const {return (inputs);};
-			std::vector<Connection *>	GetOutputConnections() const {return (outputs);};
+			const Connections &GetInputConnections() const {return (inputs);};
+			const Connections &GetOutputConnections() const {return (outputs);};
 			int							GetId() const {return (id);};
 			Layer						*GetParentLayer() const {return (parentLayer);};
 
-			value_t						GetValue() const {return (value);};
-			value_t						GetRawValue() const {return (rawValue);};
+			Value						GetValue() const {return (value);};
+			Value						GetRawValue() const {return (rawValue);};
 
-			value_t						(*GetActivationFunction(void))(Neuron *, value_t) {return (activationFuntion);};
+			Value						(*GetActivationFunction(void))(Neuron *, Value) {return (activationFuntion);};
 		/*
 		**	Back propagation
 		*/
 		private:
 
-			value_t						derivedError = 0;
+			Value						derivedError = 0;
 
 		public:
 
-			void						SetDerivedError(value_t newValue) {derivedError = newValue;};
+			void						SetDerivedError(Value newValue) {derivedError = newValue;};
 
-			value_t						GetDerivedValue(Connection *connection); // derived with respect to weight
-			value_t						GetDerivedValue(Neuron *neuron); // derived with respect to neuron
-			value_t						GetDerivedError() const {return (derivedError);};
+			Value						GetDerivedValue(Connection *connection); // derived with respect to weight
+			Value						GetDerivedValue(Neuron *neuron); // derived with respect to neuron
+			Value						GetDerivedError() const {return (derivedError);};
 
-			void						SetActivationFunctionDerivative(value_t (*f)(Neuron *, value_t)) {activationFunctionId = 0; activationFuntionDerivative = f;};
+			void						SetActivationFunctionDerivative(Value (*f)(Neuron *, Value)) {activationFunctionId = 0; activationFuntionDerivative = f;};
 
 		};
 	}

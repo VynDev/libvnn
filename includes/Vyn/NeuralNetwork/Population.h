@@ -2,7 +2,7 @@
 #define POPULATION_H
 
 #include "Network.h"
-#include "CrossOverFunctions.h"
+#include "Functions.h"
 #include "Types.h"
 
 namespace Vyn
@@ -59,7 +59,7 @@ namespace Vyn
 
 			int			nextId = 0;
 			int			currentGenerationId = 1;
-			value_t		mutationChance = 0.05;
+			Value		mutationChance = 0.05;
 
 			Network		*(*networkCreationFunction)();
 			void		(*crossOverFunction)(Population *) = &DefaultCrossOverFunction;
@@ -72,8 +72,8 @@ namespace Vyn
 			int						GetSize() const {return (population.size());};
 			int						GetCurrentGenerationId() const {return (currentGenerationId);};
 
-			void					SetMutationChance(value_t value) {mutationChance = value;};
-			value_t					GetMutationChance() const {return (mutationChance);};
+			void					SetMutationChance(Value value) {mutationChance = value;};
+			Value					GetMutationChance() const {return (mutationChance);};
 
 			void					AddPerson(Person *person);
 			Person					*GenerateNewPerson();

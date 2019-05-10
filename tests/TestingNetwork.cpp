@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:26:55
+* @Last Modified time: 2019-05-09 15:37:47
 */
 
 #include <iostream>
@@ -10,7 +10,7 @@
 #include "vtest/vtest.hpp"
 #include "../includes/Vyn/NeuralNetwork/All.h"
 
-using Vyn::NeuralNetwork::value_t;
+using Vyn::NeuralNetwork::Value;
 
 TEST(NETWORK)
 {
@@ -26,10 +26,10 @@ TEST(NETWORK)
 
 		Vyn::NeuralNetwork::TrainingParameters_t	parameters;
 
-		std::vector<std::vector<value_t>>			inputs;
-		std::vector<std::vector<value_t>>			outputs;
+		std::vector<std::vector<Value>>			inputs;
+		std::vector<std::vector<Value>>			outputs;
 
-		std::vector<value_t> empty;
+		std::vector<Value> empty;
 		inputs.push_back(empty);
 		outputs.push_back(empty);
 		inputs.push_back(empty);

@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-05 11:47:29
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:21:39
+* @Last Modified time: 2019-05-09 15:51:49
 */
 
 /*
@@ -29,14 +29,11 @@ namespace Vyn
 		Person		*GenerateChild(Population *population, Person *person1, Person *person2)
 		{
 			Person					*child;
-			std::vector<Connection *>	childConnections;
-			std::vector<Connection *>	person1Connections;
-			std::vector<Connection *>	person2Connections;
 
 			child = population->GenerateNewPerson();
-			childConnections = child->GetNetwork()->GetConnections();
-			person1Connections = person1->GetNetwork()->GetConnections();
-			person2Connections = person2->GetNetwork()->GetConnections();
+			const Connections &childConnections = child->GetNetwork()->GetConnections();
+			const Connections &person1Connections = person1->GetNetwork()->GetConnections();
+			const Connections &person2Connections = person2->GetNetwork()->GetConnections();
 			for (int i = 0; i < childConnections.size(); ++i)
 			{
 				//if (i < childConnections.size() / 2)
@@ -44,7 +41,7 @@ namespace Vyn
 					childConnections[i]->SetWeight(person1Connections[i]->GetWeight());
 				else
 					childConnections[i]->SetWeight(person2Connections[i]->GetWeight());
-				if ((value_t)rand() / (value_t)RAND_MAX < population->GetMutationChance())
+				if ((Value)rand() / (Value)RAND_MAX < population->GetMutationChance())
 					childConnections[i]->SetWeight(childConnections[i]->GetInput()->GetParentLayer()->NewWeightValue());
 			}
 			return (child);

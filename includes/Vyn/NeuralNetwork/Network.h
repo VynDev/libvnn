@@ -8,7 +8,7 @@
 
 #include "Types.h"
 #include "Utils.h"
-#include "CostFunctions.h"
+#include "Functions.h"
 
 #define VYN_NEURALNETWORK_STRING "VYN_NEURALNETWORK"
 #define VYN_NEURALNETWORK_VERSION "0.0.0"
@@ -24,16 +24,16 @@ namespace Vyn
 {
 	namespace NeuralNetwork
 	{
-		typedef struct								TrainingParameters_s
+		typedef struct				TrainingParameters_s
 		{
-			std::vector<std::vector<value_t>>		trainingSetInputs;
-			std::vector<std::vector<value_t>>		trainingSetOutputs;
-			std::vector<std::vector<value_t>>		validationSetInputs;
-			std::vector<std::vector<value_t>>		validationSetOutputs;
-			std::stringstream 						*trainingCsv = nullptr;
-			std::stringstream 						*validationCsv = nullptr;
+			std::vector<Values>		trainingSetInputs;
+			std::vector<Values>		trainingSetOutputs;
+			std::vector<Values>		validationSetInputs;
+			std::vector<Values>		validationSetOutputs;
+			std::stringstream 		*trainingCsv = nullptr;
+			std::stringstream 		*validationCsv = nullptr;
 
-		}											TrainingParameters_t;
+		}							TrainingParameters_t;
 
 		class Network {
 
@@ -44,13 +44,13 @@ namespace Vyn
 
 			
 
-			std::vector<Layer *>		layers;
-			std::vector<Connection *>	connections;
+			Layers		layers;
+			Connections	connections;
 
-			value_t						(*costFunction)(std::vector<Neuron *>, values_t) = nullptr;
-			value_t						(*costFunctionDerivative)(std::vector<Neuron *>, values_t, Neuron *) = nullptr;
-			int							costFunctionId = 0;
-			std::vector<value_t>		lastPredictionValues;
+			Value		(*costFunction)(const Neurons &, const Values &) = nullptr;
+			Value		(*costFunctionDerivative)(const Neurons &, const Values &, Neuron *) = nullptr;
+			int			costFunctionId = 0;
+			Values		lastOutputValues;
 
 		public:
 
@@ -59,8 +59,8 @@ namespace Vyn
 
 			Layer						*GetInputLayer() const;
 			Layer						*GetOutputLayer() const;
-			std::vector<Layer *>		GetLayers() const {return (layers);};
-			std::vector<Connection *>	GetConnections() const {return (connections);};
+			const Layers				&GetLayers() const {return (layers);};
+			const Connections			&GetConnections() const {return (connections);};
 
 			void						AddConnection(Connection *newConnection) {connections.push_back(newConnection);};
 			void						RandomizeConnectionsWeight();
@@ -68,7 +68,7 @@ namespace Vyn
 			void						AddLayer(Layer *layer);
 			void						AddLayer(int nbNeuron, int neuronType = 0, int weightInitializationFunctionId = 0, int nbBias = 0);
 			
-			std::vector<value_t>		Predict(std::vector<value_t> inputs);
+			const Values						&Predict(Values const &inputs);
 
 			void						SaveTo(std::string fileName);
 
@@ -78,37 +78,35 @@ namespace Vyn
 
 		private:
 
-			value_t						learningRate = 0.1;
-			value_t						gradientClipping = 0;
-			bool						normalizedGradient = false;
+			Value						learningRate = 0.1;
+			Value						gradientClipping = 0;
 			bool						earlyStoppingEnabled = false;
-			value_t						errorPropagationLimit = 0;
+			Value						errorPropagationLimit = 0;
 
 
 			void						UpdateWeights();
 
 		public:
 
-			value_t						GetLearningRate() const {return (learningRate);};
-			void						SetLearningRate(value_t newValue) {learningRate = newValue;};
+			Value						GetLearningRate() const {return (learningRate);};
+			void						SetLearningRate(Value newValue) {learningRate = newValue;};
 
-			value_t						GetCost(values_t expectedOutput);
-			value_t						GetDerivedCost(values_t expectedOutput, Neuron *outputNeuron);
+			Value						GetCost(Values const &expectedOutput);
+			Value						GetDerivedCost(Values const &expectedOutput, Neuron *outputNeuron);
 			int							GetCostFunctionId() const {return (costFunctionId);};
 
 			void						SetCostFunction(int functionId);
-			void						SetCostFunction(value_t (*f)(std::vector<Neuron *>, values_t)) {costFunctionId = 0; costFunction = f;};
-			void						SetCostFunctionDerivative(value_t (*f)(std::vector<Neuron *>, values_t, Neuron *)) {costFunctionId = 0; costFunctionDerivative = f;};
+			void						SetCostFunction(Value (*f)(const Neurons &, const Values &)) {costFunctionId = 0; costFunction = f;};
+			void						SetCostFunctionDerivative(Value (*f)(const Neurons &, const Values &, Neuron *)) {costFunctionId = 0; costFunctionDerivative = f;};
 
-			void						SetGradientClipping(value_t newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
-			void						EnableNormalizedGradient(bool newValue) {normalizedGradient = newValue;};
+			void						SetGradientClipping(Value newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
 			void						EnableEarlyStopping(bool newValue) {earlyStoppingEnabled = newValue;};
-			void						SetErrorPropagationLimit(value_t newValue) {errorPropagationLimit = newValue;};
+			void						SetErrorPropagationLimit(Value newValue) {errorPropagationLimit = newValue;};
 
 			void						Fit(TrainingParameters_t parameters, int batchSize, int nbIteration);
-			value_t						TrainBatch(Network *network, std::vector<std::vector<value_t>> &inputs, std::vector<std::vector<value_t>> &expectedOutputs, int batchSize, int i);
-			void						Propagate(values_t goodValues);
-			void						Propagate(values_t goodValues, values_t derivedCost);
+			Value						TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i);
+			void						Propagate(Values const &goodValues);
+			void						Propagate(Values const &goodValues, Values const &derivedCost);
 			void						UpdateNeuronWeights(Neuron *neuron);
 			void						CalcNeuron(Neuron *neuron);
 

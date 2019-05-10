@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:21:56
+* @Last Modified time: 2019-05-10 14:07:55
 */
 
 #include <iostream>
@@ -64,36 +64,34 @@ namespace Vyn
 			}
 		}
 
-		std::vector<value_t>	Network::Predict(std::vector<value_t> inputs)
+		const Values	&Network::Predict(Values const &inputs)
 		{
-			std::vector<Neuron *>	inputLayerNeurons;
-			std::vector<Neuron *>	outputLayerNeurons;
-			std::vector<value_t>	outputValues;
+			const Neurons &outputLayerNeurons = layers[layers.size() - 1]->GetNeurons();
+			this->lastOutputValues.clear();
+			this->lastOutputValues.reserve(outputLayerNeurons.size());
 
 			if (layers.size() < 2)
 				throw std::string("There must be minimum 2 layers (input & output)");
-			inputLayerNeurons = layers[0]->GetNeurons();
+			const Neurons &inputLayerNeurons = layers[0]->GetNeurons();
 			if (inputLayerNeurons.size() - layers[0]->GetBiasCount() != inputs.size())
 				throw std::string("Missing inputs");
-			for (std::vector<Neuron *>::size_type i = 0; i < inputs.size(); ++i)
+			for (Neurons::size_type i = 0; i < inputs.size(); ++i)
 				inputLayerNeurons[i]->SetValue(inputs[i]);
-			for (std::vector<Layer *>::size_type i = 1; i < layers.size(); ++i)
+			for (Layers::size_type i = 1; i < layers.size(); ++i)
 				layers[i]->ComputeValues();
-			outputLayerNeurons = layers[layers.size() - 1]->GetNeurons();
-			for (std::vector<Neuron *>::size_type i = 0; i < outputLayerNeurons.size(); ++i)
-				outputValues.push_back(outputLayerNeurons[i]->GetValue());
-			lastPredictionValues = outputValues;
-			return (outputValues);
+			for (Neurons::size_type i = 0; i < outputLayerNeurons.size(); ++i)
+				lastOutputValues.push_back(outputLayerNeurons[i]->GetValue());
+			return (lastOutputValues);
 		}
 
-		value_t					Network::GetCost(values_t expectedOutput)
+		Value					Network::GetCost(Values const &expectedOutput)
 		{
 			if (costFunction != nullptr)
 				return ((*costFunction)(GetOutputLayer()->GetNeurons(), expectedOutput));
 			throw std::string("No cost function defined");
 		}
 
-		value_t					Network::GetDerivedCost(values_t expectedOutput, Neuron *outputNeuron)
+		Value					Network::GetDerivedCost(Values const &expectedOutput, Neuron *outputNeuron)
 		{
 			if (costFunctionDerivative != nullptr)
 				return ((*costFunctionDerivative)(GetOutputLayer()->GetNeurons(), expectedOutput, outputNeuron));
@@ -121,11 +119,11 @@ namespace Vyn
 			file << VYN_NEURALNETWORK_STRING << std::endl;
 			file << VYN_NEURALNETWORK_VERSION << std::endl;
 			file << layers.size() << std::endl;
-			for (std::vector<Layer *>::size_type i = 0; i < layers.size(); ++i)
+			for (Layers::size_type i = 0; i < layers.size(); ++i)
 			{
-				std::vector<Neuron *> neurons;
+				Neurons neurons;
 				neurons = layers[i]->GetNeurons();
-				for (std::vector<Neuron *>::size_type j = 0; j < neurons.size(); ++j)
+				for (Neurons::size_type j = 0; j < neurons.size(); ++j)
 				{
 					file << neurons[j]->GetActivationFunctionId() << " ";
 				}
@@ -133,7 +131,7 @@ namespace Vyn
 			}
 			file << this->GetCostFunctionId() << std::endl;
 
-			for (std::vector<Connection *>::size_type i = 0; i < connections.size(); ++i)
+			for (Connections::size_type i = 0; i < connections.size(); ++i)
 			{
 				file << connections[i]->GetWeight() << " ";
 			}

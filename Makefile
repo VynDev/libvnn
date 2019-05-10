@@ -37,8 +37,7 @@ SOURCES = 	Neuron.cpp \
 			Functions/ActivationFunctions.cpp \
 			Functions/CostFunctions.cpp \
 			Functions/CrossOverFunctions.cpp \
-			Utils/Utils.cpp \
-			Debug/Debug.cpp 
+			Utils/Utils.cpp
 
 ################ Setup paths
 

@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:22:00
+* @Last Modified time: 2019-05-10 14:09:31
 */
 
 #include "Network.h"
@@ -18,22 +18,22 @@ namespace Vyn
 
 	namespace NeuralNetwork
 	{
-		value_t			PredictOne(Network *network, std::vector<value_t> &inputs, std::vector<value_t> &expectedOutputs)
+		Value			PredictOne(Network *network, const Values &inputs, const Values &expectedOutputs)
 		{
 			network->Predict(inputs);
 			return (network->GetCost(expectedOutputs));
 		}
 
-		value_t			Network::TrainBatch(Network *network, std::vector<std::vector<value_t>> &inputs, std::vector<std::vector<value_t>> &expectedOutputs, int batchSize, int i)
+		Value			Network::TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i)
 		{
-			value_t								totalCost;
-			std::vector<Neuron *>				outputLayerNeurons;
-			std::vector<value_t>				derivedCosts;
+			Value	totalCost;
+			Values	derivedCosts;
 
 			totalCost = 0;
-			outputLayerNeurons = network->GetOutputLayer()->GetNeurons();
+			const Neurons &outputLayerNeurons = network->GetOutputLayer()->GetNeurons();
+			derivedCosts.reserve(outputLayerNeurons.size());
 
-			for (std::vector<Neuron *>::size_type k = 0; k < outputLayerNeurons.size(); ++k)
+			for (Neurons::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 			{
 				derivedCosts.push_back(0);
 			}
@@ -42,13 +42,13 @@ namespace Vyn
 			for (int j = 0; j < batchSize; ++j)
 			{
 				totalCost += PredictOne(network, inputs[i + j], expectedOutputs[i + j]);
-				for (std::vector<Neuron *>::size_type k = 0; k < outputLayerNeurons.size(); ++k)
+				for (Neurons::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 				{
 					derivedCosts[k] = derivedCosts[k] + network->GetDerivedCost(expectedOutputs[i + j], outputLayerNeurons[k]);
 				}
 			}
 			totalCost = totalCost / batchSize;
-			for (std::vector<value_t>::size_type k = 0; k < outputLayerNeurons.size(); ++k)
+			for (Values::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 			{
 				derivedCosts[k] = derivedCosts[k] / batchSize;
 			}
@@ -57,9 +57,9 @@ namespace Vyn
 			return (totalCost);
 		}
 
-		value_t					ValidationSet(Network *network, TrainingParameters_t &parameters)
+		Value					ValidationSet(Network *network, TrainingParameters_t &parameters)
 		{
-			value_t	totalCost;
+			Value	totalCost;
 
 			totalCost = 0;
 			for (int i = 0; i < parameters.validationSetInputs.size(); ++i)
@@ -72,9 +72,9 @@ namespace Vyn
 
 		void					Network::Fit(TrainingParameters_t parameters, int batchSize, int nbIteration)
 		{
-			value_t					totalCost;
-			value_t					validationCost = -1;
-			value_t					lastValidationCost = -1;
+			Value					totalCost;
+			Value					validationCost = -1;
+			Value					lastValidationCost = -1;
 			int						noImprovementEpoch = 0;
 			int						noImprovementEpochLimit = 0;
 			int						k;
@@ -96,7 +96,7 @@ namespace Vyn
 				k = 0;
 				for (int j = 0; j < parameters.trainingSetInputs.size(); j += batchSize)
 				{
-					value_t		cost;
+					Value		cost;
 					cost = TrainBatch(this, parameters.trainingSetInputs, parameters.trainingSetOutputs, batchSize, j);
 					totalCost += cost;
 					++k;
