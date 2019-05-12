@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:26:04
+* @Last Modified time: 2019-05-12 18:17:16
 */
 
 #include <iostream>
@@ -19,6 +19,7 @@ int		main(void)
 {
 	try
 	{
+		srand(time(NULL));
 		TEST_EXECUTE(CONNECTION);
 		TEST_EXECUTE(NEURON);
 		TEST_EXECUTE(LAYER);

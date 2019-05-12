@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 15:23:45
+* @Last Modified time: 2019-05-12 18:18:39
 */
 
 #include <iostream>
@@ -18,9 +18,9 @@ TEST(NETWORK)
 	{
 		Vyn::NeuralNetwork::Network network;
 
-		network.AddLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 1);
-		network.AddLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 1);
-		network.AddLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 0);
+		network.AddLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
+		network.AddLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
+		network.AddLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
 		network.SetLearningRate(0.1);
 		network.SetCostFunction(COST_FUNCTION_MSE);
 

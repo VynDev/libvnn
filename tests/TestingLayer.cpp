@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-09 15:36:16
+* @Last Modified time: 2019-05-12 18:00:19
 */
 
 #include <iostream>
@@ -29,35 +29,10 @@ TEST(LAYER)
 		REQUIRE(layer.GetBiasCount() == 1);
 	}
 
-	CASE("Basic (testing connections)")
-	{
-		Vyn::NeuralNetwork::Layer	inputLayer(1, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 0);
-		Vyn::NeuralNetwork::Layer	outputLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 0);
-
-		REQUIRE(inputLayer.GetNeurons().size() == 1);
-		REQUIRE(outputLayer.GetNeurons().size() == 1);
-		REQUIRE(inputLayer.GetBiasCount() == 0);
-		REQUIRE(outputLayer.GetBiasCount() == 0);
-
-		inputLayer.ConnectTo(&outputLayer);
-		std::vector<Vyn::NeuralNetwork::Neuron *>	inputNeurons;
-		std::vector<Vyn::NeuralNetwork::Neuron *>	outputNeurons;
-		
-		inputNeurons = inputLayer.GetNeurons();
-		outputNeurons = outputLayer.GetNeurons();
-		for (int i = 0; i < inputNeurons.size(); ++i)
-		{
-			for (int j = 0; j < outputNeurons.size(); ++j)
-			{
-				REQUIRE(inputNeurons[i]->GetOutputConnections()[j]->GetOutput() == outputNeurons[j]);
-			}
-		}
-	}
-
 	CASE("Basic with bias (testing connections)")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(1, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 1);
-		Vyn::NeuralNetwork::Layer	outputLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 0);
+		Vyn::NeuralNetwork::Layer	inputLayer(1, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
 
 		REQUIRE(inputLayer.GetNeurons().size() == 2);
 		REQUIRE(outputLayer.GetNeurons().size() == 1);
@@ -81,8 +56,8 @@ TEST(LAYER)
 
 	CASE("Less basic (testing connections)")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(42, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 1);
-		Vyn::NeuralNetwork::Layer	outputLayer(21, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 0);
+		Vyn::NeuralNetwork::Layer	inputLayer(42, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(21, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
 
 		REQUIRE(inputLayer.GetNeurons().size() == 43);
 		REQUIRE(outputLayer.GetNeurons().size() == 21);
@@ -106,8 +81,8 @@ TEST(LAYER)
 
 	CASE("Compute values & get values")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0, 1);
-		Vyn::NeuralNetwork::Layer	outputLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0, 0);
+		Vyn::NeuralNetwork::Layer	inputLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
 
 		inputLayer.ConnectTo(&outputLayer);
 		std::vector<Vyn::NeuralNetwork::Neuron *>	inputNeurons;

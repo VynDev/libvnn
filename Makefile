@@ -1,7 +1,7 @@
 ################ Config
 
-NAME_STATIC = libvnn.a
-NAME_DYNAMIC = libvnn.so
+NAME_STATIC = lib/libvnn.a
+NAME_DYNAMIC = lib/libvnn.so
 
 COMPILER = g++
 O_FLAGS = 
@@ -25,7 +25,7 @@ ARCHIVER_UE4_FLAGS = rc
 #ARCHIVER_FLAGS = $(ARCHIVER_UE4_FLAGS)
 #----------------------------------------------
 
-INCLUDES =	-I includes/Vyn/NeuralNetwork -I includes/Vyn/File
+INCLUDES =	-I include/Vyn/NeuralNetwork -I include/Vyn/File
 
 SOURCES = 	Neuron.cpp \
 			Connection.cpp \
@@ -42,19 +42,19 @@ SOURCES = 	Neuron.cpp \
 
 ################ Setup paths
 
-SRCS = $(addprefix sources/, $(SOURCES)) # All sources are ine 'sources' folder
-OBJS = $(SRCS:sources/%.cpp=obj/%.o) # All objects are ine 'obj' folder, mirrored from 'sources'
+SRCS = $(addprefix source/, $(SOURCES)) # All sources are in the 'source' folder
+OBJS = $(SRCS:source/%.cpp=obj/%.o) # All objects are ine 'obj' folder, mirrored from 'source'
 OBJDIRS := $(dir $(OBJS)) # Get all directories to create them in the 'obj' folder. (remove files from the string)
 
 ################ Rules
 
-all: createdir $(NAME)
+all: createdir $(NAME_STATIC)
 	
 createdir:
 	if [ ! -d "obj" ]; then mkdir obj; fi
 	-mkdir $(OBJDIRS)
 
-obj/%.o: sources/%.cpp includes/Vyn/NeuralNetwork/*
+obj/%.o: source/%.cpp include/Vyn/NeuralNetwork/*
 	$(COMPILER) $(O_FLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
@@ -65,10 +65,14 @@ fclean: clean
 	rm -f $(NAME_DYNAMIC)
 	rm -f test_program
 
+######## Static library version
+
 static: createdir $(NAME_STATIC)
 
 $(NAME_STATIC): $(OBJS)
 	$(ARCHIVER) $(ARCHIVER_FLAGS) $(NAME_STATIC) $(OBJS)
+
+######## Dynamic/Shared library version
 
 dynamic: setup_dymanic createdir $(NAME_DYNAMIC)
 
@@ -77,6 +81,8 @@ setup_dymanic:
 
 $(NAME_DYNAMIC): $(OBJS)
 	$(COMPILER) $(FLAGS) -shared $(OBJS) -o $(NAME_DYNAMIC)
+
+######## Tests
 
 test: static
 	$(COMPILER) tests/*.cpp libvnn.a -o test_program
