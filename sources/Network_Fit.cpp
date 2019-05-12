@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 15:23:45
+* @Last Modified time: 2019-05-12 13:38:56
 */
 
 #include "Network.h"
@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 namespace Vyn
 {
@@ -24,7 +25,7 @@ namespace Vyn
 			return (network->GetCost(expectedOutputs));
 		}
 
-		Value			Network::TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i)
+		Value			Network::TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i, std::vector<int> &indexes)
 		{
 			Value	totalCost;
 
@@ -41,10 +42,10 @@ namespace Vyn
 				batchSize = inputs.size() - i;
 			for (int j = 0; j < batchSize; ++j)
 			{
-				totalCost += PredictOne(network, inputs[i + j], expectedOutputs[i + j]);
+				totalCost += PredictOne(network, inputs[indexes[i] + j], expectedOutputs[indexes[i] + j]);
 				for (Neurons::size_type k = 0; k < outputLayerNeurons.size(); ++k)
 				{
-					tmpDerivedCost[k] = tmpDerivedCost[k] + network->GetDerivedCost(expectedOutputs[i + j], k);
+					tmpDerivedCost[k] = tmpDerivedCost[k] + network->GetDerivedCost(expectedOutputs[indexes[i] + j], k);
 				}
 			}
 			totalCost = totalCost / batchSize;
@@ -78,39 +79,38 @@ namespace Vyn
 			int						noImprovementEpoch = 0;
 			int						noImprovementEpochLimit = 0;
 			int						k;
+			std::vector<int>		indexes;
 
-			//std::cout << "Training, batch size = " << batchSize << ", nbIteration = " << nbIteration << std::endl;
-			if (parameters.trainingCsv)
-			{
-				*(parameters.trainingCsv) << parameters.trainingSetInputs.size() << std::endl;
-				*(parameters.trainingCsv) << batchSize << std::endl;
-			}
-			if (parameters.validationCsv)
-			{
-				*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
-				*(parameters.validationCsv) << parameters.validationSetInputs.size() << std::endl;
-			}
+			for (int i = 0; i < parameters.trainingSetInputs.size(); ++i)
+				indexes.push_back(i);
+
+			trainingCsv << parameters.trainingSetInputs.size() << std::endl;
+			trainingCsv << batchSize << std::endl;
+
+			validationCsv << parameters.validationSetInputs.size() << std::endl;
+			validationCsv << parameters.validationSetInputs.size() << std::endl;
+
 			for (int i = 0; i < nbIteration; ++i)
 			{
+				if (shuffleEnabled)
+					std::random_shuffle(indexes.begin(), indexes.end());
 				totalCost = 0;
 				k = 0;
 				for (int j = 0; j < parameters.trainingSetInputs.size(); j += batchSize)
 				{
 					Value		cost;
-					cost = TrainBatch(this, parameters.trainingSetInputs, parameters.trainingSetOutputs, batchSize, j);
+					cost = TrainBatch(this, parameters.trainingSetInputs, parameters.trainingSetOutputs, batchSize, j, indexes);
 					totalCost += cost;
 					++k;
-					if (parameters.trainingCsv != nullptr)
-						*(parameters.trainingCsv) << cost << std::endl;
+					if (true)
+						trainingCsv << cost << std::endl;
 					DEBUG_CHECK_VALUE(cost, "Cost");
 				}
 				totalCost = totalCost / k;
 				std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
-				if (parameters.validationCsv != nullptr)
-				{
-					validationCost = ValidationSet(this, parameters);
-					*(parameters.validationCsv) << validationCost << std::endl;
-				}
+
+				validationCost = ValidationSet(this, parameters);
+				validationCsv << validationCost << std::endl;
 				// early stopping
 				if (earlyStoppingEnabled && validationCost != -1)
 				{

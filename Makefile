@@ -25,7 +25,7 @@ ARCHIVER_UE4_FLAGS = rc
 #ARCHIVER_FLAGS = $(ARCHIVER_UE4_FLAGS)
 #----------------------------------------------
 
-INCLUDES =	-I includes/Vyn/NeuralNetwork
+INCLUDES =	-I includes/Vyn/NeuralNetwork -I includes/Vyn/File
 
 SOURCES = 	Neuron.cpp \
 			Connection.cpp \
@@ -37,6 +37,7 @@ SOURCES = 	Neuron.cpp \
 			Functions/ActivationFunctions.cpp \
 			Functions/CostFunctions.cpp \
 			Functions/CrossOverFunctions.cpp \
+			File/Csv.cpp \
 			Utils/Utils.cpp
 
 ################ Setup paths

@@ -15,25 +15,25 @@ namespace Vyn
 {
 	namespace NeuralNetwork
 	{
-		Network		*Load(std::string fileName);
+		Network *Load(std::string fileName);
 
-		typedef struct				ScaleData_s
+		typedef struct	ScaleData_s
 		{
 			Value		min;
 			Value		max;
 			Value		mean;
-		} 							ScaleData;
-		std::vector<ScaleData>	MinMax(std::vector<Values> &inputs);
-		std::vector<ScaleData>	MinMax(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
-		std::vector<ScaleData>	MeanNormalisation(std::vector<Values> &inputs);
-		std::vector<ScaleData>	MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
+		} 				ScaleData;
+		std::vector<ScaleData> MinMax(std::vector<Values> &inputs);
+		std::vector<ScaleData> MinMax(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
+		std::vector<ScaleData> MeanNormalisation(std::vector<Values> &inputs);
+		std::vector<ScaleData> MeanNormalisation(std::vector<Values> &inputs, std::vector<ScaleData> &scaleDatas);
 
 		void SaveScaleDatas(std::vector<ScaleData> scaleDatas, std::string fileName);
-		std::vector<ScaleData>	LoadScaleDatas(std::string fileName);
+		std::vector<ScaleData> LoadScaleDatas(std::string fileName);
 
 		namespace debug
 		{
-			void	CheckValue(Value value, std::string msg);
+			void CheckValue(Value value, std::string msg);
 		}
 	}
 }

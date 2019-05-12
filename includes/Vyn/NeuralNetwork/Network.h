@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <float.h>
 
 #include "Types.h"
@@ -30,8 +31,6 @@ namespace Vyn
 			std::vector<Values>		trainingSetOutputs;
 			std::vector<Values>		validationSetInputs;
 			std::vector<Values>		validationSetOutputs;
-			std::stringstream 		*trainingCsv = nullptr;
-			std::stringstream 		*validationCsv = nullptr;
 
 		}							TrainingParameters;
 
@@ -41,8 +40,6 @@ namespace Vyn
 		**	Global neural network
 		*/
 		private:
-
-			
 
 			Layers		layers;
 			Connections	connections;
@@ -67,9 +64,9 @@ namespace Vyn
 			void						RandomizeConnectionsWeight();
 
 			void						AddLayer(Layer *layer);
-			void						AddLayer(int nbNeuron, int neuronType = 0, int weightInitializationFunctionId = 0, int nbBias = 0);
+			void						AddLayer(int nbNeuron, int neuronType = 0, int weightInitializationFunctionId = 1);
 			
-			const Values						&Predict(Values const &inputs);
+			const Values				&Predict(Values const &inputs);
 
 			void						SaveTo(std::string fileName);
 
@@ -82,7 +79,11 @@ namespace Vyn
 			Value						learningRate = 0.1;
 			Value						gradientClipping = 0;
 			bool						earlyStoppingEnabled = false;
+			bool						shuffleEnabled = false;
 			Value						errorPropagationLimit = 0;
+
+			std::stringstream 			trainingCsv;
+			std::stringstream 			validationCsv;
 
 
 			void						UpdateWeights();
@@ -102,14 +103,18 @@ namespace Vyn
 
 			void						SetGradientClipping(Value newValue) {gradientClipping = (newValue < 0 ? -newValue : newValue);};
 			void						EnableEarlyStopping(bool newValue) {earlyStoppingEnabled = newValue;};
+			void						EnableShuffle(bool newValue) {shuffleEnabled = newValue;};
 			void						SetErrorPropagationLimit(Value newValue) {errorPropagationLimit = newValue;};
 
 			void						Fit(TrainingParameters parameters, int batchSize, int nbIteration);
-			Value						TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i);
+			Value						TrainBatch(Network *network, std::vector<Values> &inputs, std::vector<Values> &expectedOutputs, int batchSize, int i, std::vector<int> &indexes);
 			void						Propagate(Values const &goodValues);
 			void						Propagate(Values const &goodValues, Values const &derivedCost);
 			void						UpdateNeuronWeights(Neuron *neuron);
 			void						CalcNeuron(Neuron *neuron);
+
+			void						SaveTrainingCsv(std::string path);
+			void						SaveValidationCsv(std::string path);
 
 		};
 	}

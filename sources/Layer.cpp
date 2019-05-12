@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 12:34:51
+* @Last Modified time: 2019-05-12 15:48:10
 */
 
 #include <iostream>
@@ -18,17 +18,13 @@ namespace Vyn
 	{
 		Layer::Layer() {}
 		
-		Layer::Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias)
+		Layer::Layer(int nbNeuron, int functionId, int weightInitializationFunctionId)
 		{
 			SetWeightInitialization(weightInitializationFunctionId);
 			++nbLayer;
 			for (int i = 0; i < nbNeuron; ++i)
 			{
 				AddNeuron(functionId);
-			}
-			for (int i = 0; i < nbBias; ++i)
-			{
-				AddBias();
 			}
 		}
 

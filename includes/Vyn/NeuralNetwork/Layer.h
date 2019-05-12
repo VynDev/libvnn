@@ -37,7 +37,7 @@ namespace Vyn
 		public:
 
 			Layer();
-			Layer(int nbNeuron, int functionId, int weightInitializationFunctionId, int nbBias = 0);
+			Layer(int nbNeuron, int functionId, int weightInitializationFunctionId);
 
 			void SetParentNetwork(Network *network) {parentNetwork = network;};
 			Network *GetParentNetwork() const {return (parentNetwork);};

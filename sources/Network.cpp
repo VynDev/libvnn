@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 14:44:14
+* @Last Modified time: 2019-05-12 16:02:37
 */
 
 #include <iostream>
@@ -27,10 +27,14 @@ namespace Vyn
 
 		}
 
-		void					Network::AddLayer(int nbNeuron, int neuronType, int weightInitializationFunctionId, int nbBias)
+		void					Network::AddLayer(int nbNeuron, int neuronType, int weightInitializationFunctionId)
 		{
 			Layer	*newLayer;
-			newLayer = new Layer(nbNeuron, neuronType, weightInitializationFunctionId, nbBias);
+			newLayer = new Layer(nbNeuron, neuronType, weightInitializationFunctionId);
+			if (layers.size() != 0)
+			{
+				layers[layers.size() - 1]->AddBias();
+			}
 			AddLayer(newLayer);
 		}
 
@@ -144,6 +148,22 @@ namespace Vyn
 			{
 				connections[i]->SetWeight(connections[i]->GetInput()->GetParentLayer()->NewWeightValue());
 			}
+		}
+
+		void					Network::SaveTrainingCsv(std::string path)
+		{
+			std::ofstream file;
+			file.open(path);
+			file << trainingCsv.str();
+			file.close();
+		}
+
+		void					Network::SaveValidationCsv(std::string path)
+		{
+			std::ofstream file;
+			file.open(path);
+			file << validationCsv.str();
+			file.close();
 		}
 	}
 }
