@@ -83,7 +83,7 @@ Let's start from the beginning
 namespace NNet = Vyn::NeuralNetwork;
 ```
 I'll pass on \<iostream\> and \<vector\>.  
-We include **Vyn/NeuralNetwork.h** for neural networks, all the functions are under the namespace **Vyn::NeuralNetwork** so we redure it to **NNet** to make it easier.
+We include **Vyn/NeuralNetwork.h** for neural networks, all the functions are under the namespace **Vyn::NeuralNetwork** so we reduce it to **NNet** to make it easier.
 ```cpp
 srand(time(NULL));
 ```
