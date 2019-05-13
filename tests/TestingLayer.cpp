@@ -2,10 +2,11 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-13 16:03:36
+* @Last Modified time: 2019-05-13 17:08:32
 */
 
 #include <iostream>
+#include <cmath>
 
 #include "vtest/vtest.hpp"
 #include "Vyn/NeuralNetwork.h"

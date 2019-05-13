@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <fstream>
 #include <float.h>
 
 #include "Types.h"

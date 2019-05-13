@@ -3,8 +3,7 @@
 
 #include <vector>
 #include <string>
-#include <cmath>
-#include <iostream>
+
 
 #include "Network.h"
 #include "Layer.h"

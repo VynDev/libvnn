@@ -2,7 +2,6 @@
 #define CONNECTION_H
 
 #include <vector>
-#include <cstdlib>
 
 #include "Types.h"
 
@@ -20,7 +19,7 @@ namespace Vyn
 
 			Neuron								*input = nullptr;
 			Neuron								*output = nullptr;
-			Weight							weight = 0;
+			Weight								weight = 0;
 
 		public:
 
