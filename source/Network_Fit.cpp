@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-03-10 18:33:50
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-12 13:38:56
+* @Last Modified time: 2019-05-13 14:00:07
 */
 
 #include "Network.h"
@@ -107,7 +107,7 @@ namespace Vyn
 					DEBUG_CHECK_VALUE(cost, "Cost");
 				}
 				totalCost = totalCost / k;
-				std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
+				//std::cout << "[" << i << "] Cost: " << totalCost << "    (learning rate: " << GetLearningRate() << ")" << std::endl;
 
 				validationCost = ValidationSet(this, parameters);
 				validationCsv << validationCost << std::endl;

@@ -2,13 +2,15 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-12 18:00:19
+* @Last Modified time: 2019-05-13 16:03:36
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/Vyn/NeuralNetwork/All.h"
+#include "Vyn/NeuralNetwork.h"
+
+using namespace Vyn::NeuralNetwork;
 
 TEST(LAYER)
 {
@@ -18,10 +20,10 @@ TEST(LAYER)
 
 		REQUIRE(layer.GetNeurons().size() == 0);
 		REQUIRE(layer.GetBiasCount() == 0);
-		layer.AddNeuron(NEURON_FUNCTION_SIGMOID);
+		layer.AddNeuron(Activation::Sigmoid);
 		REQUIRE(layer.GetNeurons().size() == 1);
 		REQUIRE(layer.GetBiasCount() == 0);
-		layer.AddNeuron(NEURON_FUNCTION_SIGMOID);
+		layer.AddNeuron(Activation::Sigmoid);
 		REQUIRE(layer.GetNeurons().size() == 2);
 		REQUIRE(layer.GetBiasCount() == 0);
 		layer.AddBias();
@@ -31,12 +33,12 @@ TEST(LAYER)
 
 	CASE("Basic with bias (testing connections)")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(1, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
-		Vyn::NeuralNetwork::Layer	outputLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	inputLayer(1, Activation::None, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(1, Activation::Sigmoid, WEIGHT_INIT_0);
 
-		REQUIRE(inputLayer.GetNeurons().size() == 2);
+		REQUIRE(inputLayer.GetNeurons().size() == 1);
 		REQUIRE(outputLayer.GetNeurons().size() == 1);
-		REQUIRE(inputLayer.GetBiasCount() == 1);
+		REQUIRE(inputLayer.GetBiasCount() == 0);
 		REQUIRE(outputLayer.GetBiasCount() == 0);
 
 		inputLayer.ConnectTo(&outputLayer);
@@ -56,12 +58,12 @@ TEST(LAYER)
 
 	CASE("Less basic (testing connections)")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(42, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
-		Vyn::NeuralNetwork::Layer	outputLayer(21, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	inputLayer(42, Activation::None, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(21, Activation::Sigmoid, WEIGHT_INIT_0);
 
-		REQUIRE(inputLayer.GetNeurons().size() == 43);
+		REQUIRE(inputLayer.GetNeurons().size() == 42);
 		REQUIRE(outputLayer.GetNeurons().size() == 21);
-		REQUIRE(inputLayer.GetBiasCount() == 1);
+		REQUIRE(inputLayer.GetBiasCount() == 0);
 		REQUIRE(outputLayer.GetBiasCount() == 0);
 
 		inputLayer.ConnectTo(&outputLayer);
@@ -81,9 +83,10 @@ TEST(LAYER)
 
 	CASE("Compute values & get values")
 	{
-		Vyn::NeuralNetwork::Layer	inputLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
-		Vyn::NeuralNetwork::Layer	outputLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	inputLayer(2, Activation::None, WEIGHT_INIT_0);
+		Vyn::NeuralNetwork::Layer	outputLayer(2, Activation::Sigmoid, WEIGHT_INIT_0);
 
+		inputLayer.AddBias();
 		inputLayer.ConnectTo(&outputLayer);
 		std::vector<Vyn::NeuralNetwork::Neuron *>	inputNeurons;
 		std::vector<Vyn::NeuralNetwork::Neuron *>	outputNeurons;

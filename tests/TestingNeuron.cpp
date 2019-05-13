@@ -2,13 +2,15 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:26:52
+* @Last Modified time: 2019-05-13 16:03:36
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/Vyn/NeuralNetwork/All.h"
+#include "Vyn/NeuralNetwork.h"
+
+using namespace Vyn::NeuralNetwork;
 
 TEST(NEURON)
 {
@@ -21,9 +23,9 @@ TEST(NEURON)
 		Vyn::NeuralNetwork::Neuron neuron2(2);
 		REQUIRE(neuron2.GetActivationFunctionId() == 2);
 
-		Vyn::NeuralNetwork::Neuron neuronNotBias(NEURON_FUNCTION_SIGMOID);
+		Vyn::NeuralNetwork::Neuron neuronNotBias(Activation::Sigmoid);
 		REQUIRE(!neuronNotBias.IsBias());
-		Vyn::NeuralNetwork::Neuron neuronBias(NEURON_FUNCTION_BIAS);
+		Vyn::NeuralNetwork::Neuron neuronBias(Activation::Bias);
 		REQUIRE(neuronBias.IsBias());
 	}
 
@@ -42,8 +44,8 @@ TEST(NEURON)
 
 	CASE("Test: connecting neurons & compute value & activation function")
 	{
-		Vyn::NeuralNetwork::Neuron inputNeuron(NEURON_FUNCTION_NONE);
-		Vyn::NeuralNetwork::Neuron outputNeuron(NEURON_FUNCTION_SIGMOID);
+		Vyn::NeuralNetwork::Neuron inputNeuron(Activation::None);
+		Vyn::NeuralNetwork::Neuron outputNeuron(Activation::Sigmoid);
 
 		REQUIRE(inputNeuron.GetInputConnections().size() == 0);
 		REQUIRE(inputNeuron.GetOutputConnections().size() == 0);

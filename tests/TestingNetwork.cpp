@@ -2,76 +2,72 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-12 18:18:39
+* @Last Modified time: 2019-05-13 16:14:53
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/Vyn/NeuralNetwork/All.h"
+#include "Vyn/NeuralNetwork.h"
 
-using Vyn::NeuralNetwork::Value;
+namespace NNet = Vyn::NeuralNetwork;
 
 TEST(NETWORK)
 {
-	CASE("Training XOR")
+	CASE("Training XOR method 1")
 	{
-		Vyn::NeuralNetwork::Network network;
+		srand(time(NULL));
+		NNet::Network network;
 
-		network.AddLayer(2, NEURON_FUNCTION_NONE, WEIGHT_INIT_0);
-		network.AddLayer(2, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
-		network.AddLayer(1, NEURON_FUNCTION_SIGMOID, WEIGHT_INIT_0);
+		network.AddLayer(2, NNet::Activation::None);
+		network.AddLayer(2, NNet::Activation::Sigmoid);
+		network.AddLayer(1, NNet::Activation::Sigmoid);
 		network.SetLearningRate(0.1);
-		network.SetCostFunction(COST_FUNCTION_MSE);
+		network.SetCostFunction(NNet::Cost::MSE);
 
-		Vyn::NeuralNetwork::TrainingParameters	parameters;
+		std::vector<NNet::Values> inputs =	{{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+		std::vector<NNet::Values> outputs =	{{0}, 	 {1},	 {1},	 {0}};
 
-		std::vector<std::vector<Value>>			inputs;
-		std::vector<std::vector<Value>>			outputs;
+		for (int n = 0; n < 20000; ++n) // 20000 iterations
+		{
+			for (int i = 0; i < inputs.size(); ++i) // Each iteration, train each input
+			{
+				network.Predict(inputs[i]);
+				network.Propagate(outputs[i]);
+			}
+		}
 
-		std::vector<Value> empty;
-		inputs.push_back(empty);
-		outputs.push_back(empty);
-		inputs.push_back(empty);
-		outputs.push_back(empty);
-		inputs.push_back(empty);
-		outputs.push_back(empty);
-		inputs.push_back(empty);
-		outputs.push_back(empty);
+		WARN(network.Predict(inputs[0])[0] < 0.1);
+		WARN(network.Predict(inputs[1])[0] > 0.9);
+		WARN(network.Predict(inputs[2])[0] > 0.9);
+		WARN(network.Predict(inputs[3])[0] < 0.1);
+	}
 
-		inputs[0].push_back(0);
-		inputs[0].push_back(0);
-		outputs[0].push_back(0);
+	CASE("Training XOR method 2")
+	{
+		srand(time(NULL));
+		NNet::Network network;
 
-		inputs[1].push_back(0);
-		inputs[1].push_back(1);
-		outputs[1].push_back(1);
+		network.AddLayer(2, NNet::Activation::None);
+		network.AddLayer(2, NNet::Activation::Sigmoid);
+		network.AddLayer(1, NNet::Activation::Sigmoid);
+		network.SetLearningRate(0.1);
+		network.SetCostFunction(NNet::Cost::MSE);
 
-		inputs[2].push_back(1);
-		inputs[2].push_back(0);
-		outputs[2].push_back(1);
+		std::vector<NNet::Values> inputs =	{{0, 0}, {0, 1}, {1, 0}, {1, 1}};
+		std::vector<NNet::Values> outputs = {{0}, 	 {1},	 {1},	 {0}};
 
-		inputs[3].push_back(1);
-		inputs[3].push_back(1);
-		outputs[3].push_back(0);
+		NNet::TrainingParameters parameters;
 
 		parameters.trainingSetInputs = inputs;
 		parameters.trainingSetOutputs = outputs;
 
 		network.Fit(parameters, 1, 20000);
 
-		network.Predict(inputs[0]);
-		//std::cout << network.GetOutputLayer()->GetNeurons()[0]->GetValue() << std::endl;
-		WARN(network.GetOutputLayer()->GetNeurons()[0]->GetValue() < 0.1);
-		network.Predict(inputs[1]);
-		//std::cout << network.GetOutputLayer()->GetNeurons()[0]->GetValue() << std::endl;
-		WARN(network.GetOutputLayer()->GetNeurons()[0]->GetValue() > 0.9);
-		network.Predict(inputs[2]);
-		//std::cout << network.GetOutputLayer()->GetNeurons()[0]->GetValue() << std::endl;
-		WARN(network.GetOutputLayer()->GetNeurons()[0]->GetValue() > 0.9);
-		network.Predict(inputs[3]);
-		//std::cout << network.GetOutputLayer()->GetNeurons()[0]->GetValue() << std::endl;
-		WARN(network.GetOutputLayer()->GetNeurons()[0]->GetValue() < 0.1);
+		WARN(network.Predict(inputs[0])[0] < 0.1);
+		WARN(network.Predict(inputs[1])[0] > 0.9);
+		WARN(network.Predict(inputs[2])[0] > 0.9);
+		WARN(network.Predict(inputs[3])[0] < 0.1);
 	}
 	
 	TEST_EXIT(TEST_SUCCESS);

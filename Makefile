@@ -85,5 +85,5 @@ $(NAME_DYNAMIC): $(OBJS)
 ######## Tests
 
 test: static
-	$(COMPILER) tests/*.cpp libvnn.a -o test_program
+	$(COMPILER) -I include tests/*.cpp lib/libvnn.a -o test_program
 	./test_program

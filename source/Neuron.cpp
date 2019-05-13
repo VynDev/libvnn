@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-01 12:36:17
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-10 13:36:44
+* @Last Modified time: 2019-05-13 15:00:53
 */
 
 #include <iostream>
@@ -31,7 +31,7 @@ namespace Vyn
 		{
 			Neuron();
 			SetActivationFunction(type);
-			if (type == NEURON_FUNCTION_BIAS)
+			if (type == Activation::Bias)
 				SetBias(true);
 		}
 
@@ -109,18 +109,18 @@ namespace Vyn
 		*	The lib provides some activation functions (Sigmoid, Softmax)
 		*	
 		*	@param id	The activation function ID:  
-		*				NEURON_FUNCTION_SIGMOID  
-		*				NEURON_FUNCTION_SOFTMAX
+		*				Activation::Sigmoid  
+		*				Activation::Softmax
 		*/
 		void		Neuron::SetActivationFunction(int id)
 		{
 			activationFunctionId = id;
-			if (id == NEURON_FUNCTION_SIGMOID)
+			if (id == Activation::Sigmoid)
 			{
 				activationFuntion = &Sigmoid;
 				activationFuntionDerivative = &SigmoidDerivative;
 			}
-			if (id == NEURON_FUNCTION_SOFTMAX)
+			if (id == Activation::Softmax)
 			{
 				activationFuntion = &Softmax;
 				activationFuntionDerivative = &SoftmaxDerivative;

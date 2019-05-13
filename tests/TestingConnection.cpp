@@ -2,13 +2,15 @@
 * @Author: Vyn
 * @Date:   2019-04-18 15:01:42
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-01 19:27:01
+* @Last Modified time: 2019-05-13 16:03:36
 */
 
 #include <iostream>
 
 #include "vtest/vtest.hpp"
-#include "../includes/Vyn/NeuralNetwork/All.h"
+#include "Vyn/NeuralNetwork.h"
+
+using namespace Vyn::NeuralNetwork;
 
 TEST(CONNECTION)
 {

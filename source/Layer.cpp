@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:33
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-12 15:48:10
+* @Last Modified time: 2019-05-13 14:33:20
 */
 
 #include <iostream>
@@ -32,7 +32,7 @@ namespace Vyn
 		{
 			Neuron	*neuron;
 
-			if (functionId == NEURON_FUNCTION_BIAS)
+			if (functionId == Activation::Bias)
 				this->nbBias += 1;
 			neuron = new Neuron(functionId);
 			neuron->SetParentLayer(this);
@@ -44,7 +44,7 @@ namespace Vyn
 			Neuron	*neuron;
 
 			this->nbBias += 1;
-			neuron = new Neuron(NEURON_FUNCTION_BIAS);
+			neuron = new Neuron(Activation::Bias);
 			neuron->SetParentLayer(this);
 			neurons.push_back(neuron);
 		}

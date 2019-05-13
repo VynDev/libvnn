@@ -1,14 +1,6 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#define NEURON_FUNCTION_NONE 0
-#define NEURON_FUNCTION_BIAS 1
-#define NEURON_FUNCTION_SIGMOID 2
-#define NEURON_FUNCTION_SOFTMAX 3
-
-#define COST_FUNCTION_MSE 1
-#define COST_FUNCTION_CE 2
-
 #define CROSSOVER_FUNCTION_DEFAULT 0
 
 #include <vector>
@@ -18,6 +10,16 @@ namespace Vyn
 {
 	namespace NeuralNetwork
 	{
+		namespace Activation
+		{
+			enum {None, Bias, Sigmoid, Softmax};
+		}
+
+		namespace Cost
+		{
+			enum {None, MSE, BCE};
+		}
+	
 		Value Sigmoid(Neuron *, Value x);
 		Value SigmoidDerivative(Neuron *, Value x);
 

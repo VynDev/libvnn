@@ -2,7 +2,7 @@
 * @Author: Vyn
 * @Date:   2019-02-02 11:29:39
 * @Last Modified by:   Vyn
-* @Last Modified time: 2019-05-12 16:02:37
+* @Last Modified time: 2019-05-13 15:04:32
 */
 
 #include <iostream>
@@ -56,12 +56,12 @@ namespace Vyn
 		void					Network::SetCostFunction(int id)
 		{
 			costFunctionId = id;
-			if (id == COST_FUNCTION_MSE)
+			if (id == Cost::MSE)
 			{
 				costFunction = &SquaredError;
 				costFunctionDerivative = &SquaredErrorDerivative;
 			}
-			else if (id == COST_FUNCTION_CE)
+			else if (id == Cost::BCE)
 			{
 				costFunction = &CrossEntropy;
 				costFunctionDerivative = &CrossEntropyDerivative;
