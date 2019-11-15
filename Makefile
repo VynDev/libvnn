@@ -52,6 +52,7 @@ all: createdir $(NAME_STATIC)
 	
 createdir:
 	if [ ! -d "obj" ]; then mkdir obj; fi
+	if [ ! -d "lib" ]; then mkdir lib; fi
 	-mkdir $(OBJDIRS)
 
 obj/%.o: source/%.cpp include/Vyn/NeuralNetwork/*
