@@ -9,4 +9,4 @@ jobs:
     
     steps:
     - name: make
-      run: make
+      run: make static
