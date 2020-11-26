@@ -1,5 +1,3 @@
-**A rework of this library is in process at https://github.com/VynOffline/VynNN**
-
 # libvnn (Vyn Neural Network)
 
 This is a neural network library made in C++, i created it to learn about neural networks and data science so it may contains errors and/or not being compatible with you OS/Version
